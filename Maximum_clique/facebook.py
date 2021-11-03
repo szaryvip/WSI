@@ -12,9 +12,9 @@ def generate_graph(size: int, type: str):
     """
     Generates graph depending on the desired type and returns it"""
     if type == "random":
-        return nx.gnp_random_graph(size, 0.4, seed=123456)
+        return nx.gnp_random_graph(size, 0.4)
     elif type == "groups":
-        G = nx.gnp_random_graph(size, 0.9, seed=123456)
+        G = nx.gnp_random_graph(size, 0.9)
         for edge in G.edges():
             if floor(edge[0]/(size//4)) != floor(edge[1]/(size//4)):
                 if random.random() < 0.95:
@@ -43,11 +43,11 @@ def color_graph(population, score, graph, type):
         fixedpos = {0: (0, 0), (size//4): (1, 1),
                     (size//4)*2: (1, 0), (size//4)*3: (0, 1)}
         pos = nx.spring_layout(graph, fixed=fixedpos.keys(), pos=fixedpos)
-        # nx.draw(graph, node_color=color_map, pos=pos, with_labels=True)
-        # plt.show()
+        nx.draw(graph, node_color=color_map, pos=pos, with_labels=True)
+        plt.show()
         return len(clique)
-    # nx.draw_circular(graph, node_color=color_map, with_labels=True)
-    # plt.show()
+    nx.draw_circular(graph, node_color=color_map, with_labels=True)
+    plt.show()
     return len(clique)
 
 
@@ -150,21 +150,21 @@ def facebook(graph_size, g_type, p_size, iterations, prob_mut, prob_gen):
 
 
 def main():
-    values = []
-    times = []
-    for i in range(25):
-        value, time = facebook(50, "random", 35, 80, 0.9, 0.2)
-        values.append(value)
-        times.append(time)
-    print("Minimum "+str(min(values)))
-    print("Maximum "+str(max(values)))
-    print("Mean "+str(statistics.mean(values)))
-    print("Standard deviation "+str(statistics.pstdev(values)))
-    print("AVG time "+str(statistics.mean(times)))
-    # value, time = facebook(150, "random", 150, 80, 0.9, 0.2)
-    # print(value, time)
+    # values = []
+    # times = []
+    # for i in range(25):
+    #     value, time = facebook(50, "random", 35, 80, 0.9, 0.2)
+    #     values.append(value)
+    #     times.append(time)
+    # print("Minimum "+str(min(values)))
+    # print("Maximum "+str(max(values)))
+    # print("Mean "+str(statistics.mean(values)))
+    # print("Standard deviation "+str(statistics.pstdev(values)))
+    # print("AVG time "+str(statistics.mean(times)))
+    value, time = facebook(50, "random", 35, 80, 0.9, 0.2)
+    print(value, time)
 
 
 if __name__ == "__main__":
-    random.seed(123456)
+    # random.seed(123456)
     main()
