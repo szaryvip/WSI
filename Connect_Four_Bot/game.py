@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+from time import sleep
 from player import Player
 
 
@@ -15,6 +16,14 @@ class Game:
 
     def __init__(self, screen: pygame.Surface, in_row: int, in_column: int,
                  fplayer: Player, splayer: Player):
+        """
+        Constructor of Game object
+        Parameters:
+        - screen [pygame.Surface] - window where game will be created
+        - in_row [int] - how many tiles in row
+        - in_column [int] - how many tiles in column
+        - (f/s)player [Player] - players
+                 """
         if in_row >= in_column:
             self._in_row = in_row
             self._in_column = in_column
@@ -34,6 +43,8 @@ class Game:
         self._rad = min(self._size)/(2*self._in_row)
 
     def draw_board(self) -> None:
+        """
+        Initialize board for game and draw it"""
         for col in range(self._in_column):
             for row in range(self._in_row):
                 pygame.draw.circle(self._screen, (106, 0, 206),
@@ -42,7 +53,11 @@ class Game:
                                    self._rad, 2)
         pygame.display.flip()
 
-    def draw_move(self, player) -> None:
+    def draw_move(self, player) -> tuple[int, int]:
+        """
+        Draw player's move
+        Parameter:
+        -player [Player] - who is moving now"""
         col_move = player.make_move(self._board)
         color = player.get_color()
         row_move = 0
@@ -57,19 +72,58 @@ class Game:
         value = 1 if player == self._fplayer else -1
         self._board[self._in_column-row_move-1][col_move] = value
         pygame.display.flip()
+        return (col_move, row_move)
 
-    def is_winner(self) -> Player:
-        pass
+    def is_winner(self, move, player) -> bool:
+        """
+        Check if game has winner
+        Return true or false"""
+        whos_move = 1 if player.is_max() else -1
+        pattern = [whos_move]*4
+        # check vertical
+        for row in range(self._in_column-3):
+            if np.array_equal(self._board[row:row+4, move[0]], pattern):
+                return True
+        # chcek horizontal
+        for col in range(self._in_row-3):
+            if np.array_equal(self._board[self._in_column-move[1]-1,
+                              col:col+4], pattern):
+                return True
+        # check diagonal --- sth not good TODO
+        for x in range(self._in_row-3):
+            for y in range(self._in_column-3):
+                if np.array_equal(self._board[self._in_column-y-1:self._in_column-y-5:-1,
+                                              x:x+4], pattern):
+                    return True
+        for x in range(self._in_row-3):
+            for y in range(self._in_column, 3, -1):
+                if np.array_equal(self._board[y-1:y-self._in_column:-1,
+                                              x:x+4], pattern):
+                    return True
+        return False
 
-    def is_end(self) -> bool:
+    def is_draw(self) -> bool:
+        """
+        Check if game ended with draw"""
         end = True
         for place in self._board[0]:
             if place == 0.0:
                 end = False
         return end
 
-    def play(self) -> None:
+    def play(self) -> Player:
+        """
+        Main function to run game between bots"""
         self.draw_board()
-        while not self.is_end():
-            self.draw_move(self._fplayer)
-            self.draw_move(self._splayer)
+        while not self.is_draw():
+            move = self.draw_move(self._fplayer)
+            if self.is_winner(move, self._fplayer):
+                return self._fplayer
+            elif self.is_draw():  # must have if board have odd number of tiles
+                break
+            sleep(1)
+            move = self.draw_move(self._splayer)
+            if self.is_winner(move, self._splayer):
+                return self._splayer
+            sleep(1)
+        return None

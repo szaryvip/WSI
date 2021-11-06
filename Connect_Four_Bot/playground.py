@@ -19,13 +19,23 @@ GREEN = (0, 255, 0)
 
 
 def main():
+    # pygame initialization and screen creation
     pygame.init()
     pygame.display.set_caption("Connect Four")
     screen = pygame.display.set_mode(WINDOW_SIZE)
+    # game's objects creation
     fplayer = Player(True, RED)
     splayer = Player(False, GREEN)
     game = Game(screen, 5, 4, fplayer, splayer)
-    game.play()
+    # run script of game between bots
+    winner = game.play()
+    if winner is None:
+        print("Draw!")
+    elif winner == fplayer:
+        print("First player won!")
+    else:
+        print("Second player won!")
+    # checking if close the window
     running = True
     while running:
         for event in pygame.event.get():
