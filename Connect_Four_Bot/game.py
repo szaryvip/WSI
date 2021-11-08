@@ -72,7 +72,7 @@ class Game:
         value = 1 if player == self._fplayer else -1
         self._board[self._in_column-row_move-1][col_move] = value
         pygame.display.flip()
-        return (col_move, row_move)
+        return (col_move, self._in_column-row_move-1)
 
     def is_winner(self, move, player) -> bool:
         """
@@ -86,20 +86,38 @@ class Game:
                 return True
         # chcek horizontal
         for col in range(self._in_row-3):
-            if np.array_equal(self._board[self._in_column-move[1]-1,
+            if np.array_equal(self._board[move[1],
                               col:col+4], pattern):
                 return True
-        # check diagonal --- sth not good TODO
-        for x in range(self._in_row-3):
-            for y in range(self._in_column-3):
-                if np.array_equal(self._board[self._in_column-y-1:self._in_column-y-5:-1,
-                                              x:x+4], pattern):
-                    return True
-        for x in range(self._in_row-3):
-            for y in range(self._in_column, 3, -1):
-                if np.array_equal(self._board[y-1:y-self._in_column:-1,
-                                              x:x+4], pattern):
-                    return True
+        # check diagonal
+        counter = 0
+        for x, y in zip(range(move[0]-3, move[0]+4), range(move[1]-3,
+                                                           move[1]+4)):
+            if x < 0 or y < 0:
+                continue
+            try:
+                if self._board[y, x] == whos_move:
+                    counter += 1
+                    if counter == 4:
+                        return True
+                else:
+                    counter = 0
+            except IndexError:
+                break
+        counter = 0
+        for x, y in zip(range(move[0]-3, move[0]+4), range(move[1]+3,
+                                                           move[1]-4, -1)):
+            if x < 0 or y < 0:
+                continue
+            try:
+                if self._board[y, x] == whos_move:
+                    counter += 1
+                    if counter == 4:
+                        return True
+                else:
+                    counter = 0
+            except IndexError:
+                break
         return False
 
     def is_draw(self) -> bool:
@@ -121,9 +139,9 @@ class Game:
                 return self._fplayer
             elif self.is_draw():  # must have if board have odd number of tiles
                 break
-            sleep(1)
+            sleep(0.4)
             move = self.draw_move(self._splayer)
             if self.is_winner(move, self._splayer):
                 return self._splayer
-            sleep(1)
+            sleep(0.4)
         return None
