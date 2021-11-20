@@ -1,5 +1,5 @@
 import numpy as np
-from minmax_tree import MMTree
+from minmax_tree import minmaxalg
 
 
 class Player:
@@ -46,6 +46,6 @@ class Player:
             move = np.random.choice(possibilities)
             return move
         else:
-            tree = MMTree(board, self._depth)
-            move = tree.what_move(self._is_max)
+            move = minmaxalg(board, None, self._depth,
+                             -10000, 10000, self._is_max)[1]
             return move
