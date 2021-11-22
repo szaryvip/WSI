@@ -24,7 +24,7 @@ def main():
     pygame.display.set_caption("Connect Four")
     screen = pygame.display.set_mode(WINDOW_SIZE)
     # game's objects creation
-    fplayer = Player(True, RED)
+    fplayer = Player(True, RED, 'minmax', 5)
     splayer = Player(False, GREEN)
     game = Game(screen, 5, 4, fplayer, splayer)
     # run script of game between bots

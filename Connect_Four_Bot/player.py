@@ -14,9 +14,10 @@ class Player:
         Parameters:
         - is_first [bool] - if this player is first
         - color [tuple[int,int,int]] - color of player moves
-        - type ["easy"/"maxmin"] - type of bot
+        - type ["easy"/"minmax"] - type of bot
         - depth [unsigned int] - how many moves bot will calculate if maxmin"""
-        if type == "maxmin":
+        if type == "minmax":
+            self._type = "minmax"
             self._depth = depth
         elif type != "easy":
             print("Wrong type of Bot. Game will use standard values")
@@ -47,5 +48,5 @@ class Player:
             return move
         else:
             move = minmaxalg(board, None, self._depth,
-                             -10000, 10000, self._is_max)[1]
-            return move
+                             -100000, 100000, self._is_max)[1]
+            return move[0]

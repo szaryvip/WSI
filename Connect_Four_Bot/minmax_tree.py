@@ -16,12 +16,43 @@ def heuristic(board: np.array) -> int:
         int: calculated value of board
     """
     value = 0
-    # calc vertical
-
-    # calc horizontal
-
-    # calc diagonal
-
+    points = {0: 0, 1: 1, 2: 10, 3: 100, 4: 1000}
+    players = [1.0, -1.0]
+    for player in players:
+        for col in range(len(board[0])):
+            for row in range(len(board)-3):
+                if list(board[row:row+4, col]).count(player) == 4:
+                    value += (10000 * player)
+                if list(board[row:row+4, col]).count(player) == 3 and list(board[row:row+4, col]).count(0.0) == 1:
+                    value += (100 * player)
+                if list(board[row:row+4, col]).count(player) == 2 and list(board[row:row+4, col]).count(0.0) == 2:
+                    value += (10 * player)
+        for row in range(len(board)):
+            for col in range(len(board[0])-3):
+                if list(board[row, col:col+4]).count(player) == 4:
+                    value += (10000 * player)
+                if list(board[row, col:col+4]).count(player) == 3 and list(board[row, col:col+4]).count(0.0) == 1:
+                    value += (100 * player)
+                if list(board[row, col:col+4]).count(player) == 2 and list(board[row, col:col+4]).count(0.0) == 2:
+                    value += (10 * player)
+        for row in range(len(board)-1, 2, -1):
+            for col in range(len(board[0])-3):
+                to_check = [board[row-i, col+i] for i in range(4)]
+                if to_check.count(player) == 4:
+                    value += (10000 * player)
+                if to_check.count(player) == 3 and to_check.count(0.0) == 1:
+                    value += (100 * player)
+                if to_check.count(player) == 2 and to_check.count(0.0) == 2:
+                    value += (10 * player)
+        for row in range(0, len(board)-3):
+            for col in range(len(board[0])-3):
+                to_check = [board[row+i, col+i] for i in range(4)]
+                if to_check.count(player) == 4:
+                    value += (10000 * player)
+                if to_check.count(player) == 3 and to_check.count(0.0) == 1:
+                    value += (100 * player)
+                if to_check.count(player) == 2 and to_check.count(0.0) == 2:
+                    value += (10 * player)
     return value
 
 
@@ -43,6 +74,7 @@ def is_end(board: np.array, move: list[int, int], is_max: bool) -> bool:
     for place in board[0]:
         if place == 0.0:
             end = False
+            break
     if end:
         return end
     if is_max:
@@ -113,10 +145,10 @@ def children(board: np.array, is_max: bool):
             if board[row][move] == 0.0:
                 board_copy = deepcopy(board)
                 board_copy[row][move] = 1 if is_max else -1
-                new_boards.append(board_copy)
                 move = [move, row]
+                new_boards.append([board_copy, move])
                 break
-    return new_boards, move
+    return new_boards
 
 
 def minmaxalg(board: np.array, last_move: list[int, int], depth: int,
@@ -134,36 +166,35 @@ def minmaxalg(board: np.array, last_move: list[int, int], depth: int,
     Returns:
         int, [int,int]: value of board, chosen move
     """
-    if depth == 0 or is_end(board, last_move, is_max):
-        return heuristic(board), last_move
+    if last_move is not None:
+        if depth == 0 or is_end(board, last_move, is_max):
+            return heuristic(board), last_move
     moves = []
     if is_max:
-        max_value = -10000
+        max_value = -100000
         for child in children(board, is_max):
             last_move = child[1]
             new_value, move = minmaxalg(child[0], last_move, depth-1,
                                         alpha, beta, False)
             if new_value > max_value:
-                moves = []
+                moves = [move]
             max_value = max(max_value, new_value)
-            if max_value == new_value:
-                moves.append(move)
             alpha = max(alpha, new_value)
             if beta <= alpha:
                 break
-        return max_value, np.random.choice(moves)
+        which_move = np.random.randint(0, len(moves))
+        return max_value, moves[which_move]
     else:
-        min_value = 10000
+        min_value = 100000
         for child in children(board, is_max):
             last_move = child[1]
             new_value, move = minmaxalg(child[0], last_move, depth-1,
                                         alpha, beta, True)
             if new_value < min_value:
-                moves = []
+                moves = [move]
             min_value = min(min_value, new_value)
-            if min_value == new_value:
-                moves.append(move)
             beta = min(beta, new_value)
             if beta <= alpha:
                 break
-        return min_value, np.random.choice(moves)
+        which_move = np.random.randint(0, len(moves))
+        return min_value, moves[which_move]

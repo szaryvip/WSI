@@ -132,7 +132,6 @@ class Game:
     def play(self) -> Player:
         """
         Main function to run game between bots"""
-        sleep(4)
         self.draw_board()
         while not self.is_draw():
             move = self.draw_move(self._fplayer)
