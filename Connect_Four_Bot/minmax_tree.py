@@ -6,8 +6,7 @@ def heuristic(board: np.array) -> int:
     """
     Calculates value of given board
     points:
-    1 - one tile
-    10 - two in row
+    10 - two in row or 2 and 2 spaces
     100 - 3 in row or 2 in row + space + one
     1000 - 4 in row
     Args:
@@ -16,30 +15,31 @@ def heuristic(board: np.array) -> int:
         int: calculated value of board
     """
     value = 0
-    points = {0: 0, 1: 1, 2: 10, 3: 100, 4: 1000}
     players = [1.0, -1.0]
     for player in players:
         for col in range(len(board[0])):
             for row in range(len(board)-3):
-                if list(board[row:row+4, col]).count(player) == 4:
-                    value += (10000 * player)
-                if list(board[row:row+4, col]).count(player) == 3 and list(board[row:row+4, col]).count(0.0) == 1:
+                to_check = list(board[row:row+4, col])
+                if to_check.count(player) == 4:
+                    return (10000 * player)
+                if to_check.count(player) == 3 and to_check.count(0.0) == 1:
                     value += (100 * player)
-                if list(board[row:row+4, col]).count(player) == 2 and list(board[row:row+4, col]).count(0.0) == 2:
+                if to_check.count(player) == 2 and to_check.count(0.0) == 2:
                     value += (10 * player)
         for row in range(len(board)):
             for col in range(len(board[0])-3):
-                if list(board[row, col:col+4]).count(player) == 4:
-                    value += (10000 * player)
-                if list(board[row, col:col+4]).count(player) == 3 and list(board[row, col:col+4]).count(0.0) == 1:
+                to_check = list(board[row, col:col+4])
+                if to_check.count(player) == 4:
+                    return (10000 * player)
+                if to_check.count(player) == 3 and to_check.count(0.0) == 1:
                     value += (100 * player)
-                if list(board[row, col:col+4]).count(player) == 2 and list(board[row, col:col+4]).count(0.0) == 2:
+                if to_check.count(player) == 2 and to_check.count(0.0) == 2:
                     value += (10 * player)
         for row in range(len(board)-1, 2, -1):
             for col in range(len(board[0])-3):
                 to_check = [board[row-i, col+i] for i in range(4)]
                 if to_check.count(player) == 4:
-                    value += (10000 * player)
+                    return (10000 * player)
                 if to_check.count(player) == 3 and to_check.count(0.0) == 1:
                     value += (100 * player)
                 if to_check.count(player) == 2 and to_check.count(0.0) == 2:
@@ -48,7 +48,7 @@ def heuristic(board: np.array) -> int:
             for col in range(len(board[0])-3):
                 to_check = [board[row+i, col+i] for i in range(4)]
                 if to_check.count(player) == 4:
-                    value += (10000 * player)
+                    return (10000 * player)
                 if to_check.count(player) == 3 and to_check.count(0.0) == 1:
                     value += (100 * player)
                 if to_check.count(player) == 2 and to_check.count(0.0) == 2:
@@ -167,7 +167,7 @@ def minmaxalg(board: np.array, last_move: list[int, int], depth: int,
         int, [int,int]: value of board, chosen move
     """
     if last_move is not None:
-        if depth == 0 or is_end(board, last_move, is_max):
+        if depth == 0 or is_end(board, last_move, not is_max):
             return heuristic(board), last_move
     moves = []
     if is_max:
@@ -178,6 +178,8 @@ def minmaxalg(board: np.array, last_move: list[int, int], depth: int,
                                         alpha, beta, False)
             if new_value > max_value:
                 moves = [move]
+            elif new_value == max_value:
+                moves.append(move)
             max_value = max(max_value, new_value)
             alpha = max(alpha, new_value)
             if beta <= alpha:
@@ -192,6 +194,8 @@ def minmaxalg(board: np.array, last_move: list[int, int], depth: int,
                                         alpha, beta, True)
             if new_value < min_value:
                 moves = [move]
+            elif new_value == min_value:
+                moves.append(move)
             min_value = min(min_value, new_value)
             beta = min(beta, new_value)
             if beta <= alpha:

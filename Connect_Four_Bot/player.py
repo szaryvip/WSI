@@ -48,5 +48,5 @@ class Player:
             return move
         else:
             move = minmaxalg(board, None, self._depth,
-                             -100000, 100000, self._is_max)[1]
+                             -10000, 10000, self._is_max)[1]
             return move[0]
