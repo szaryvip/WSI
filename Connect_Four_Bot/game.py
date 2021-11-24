@@ -144,5 +144,5 @@ class Game:
             if self.is_winner(move, self._splayer):
                 return self._splayer
             sleep(0.4)
-            # input() #for analize
+            # input()  # for analize
         return None

@@ -47,6 +47,7 @@ class Player:
             move = np.random.choice(possibilities)
             return move
         else:
-            move = minmaxalg(board, None, self._depth,
-                             -10000, 10000, self._is_max)[1]
+            score, move = minmaxalg(board, None, self._depth,
+                                    -10000, 10000, self._is_max)
+            print(score)
             return move[0]
