@@ -12,11 +12,9 @@ def main():
     pygame.init()
     pygame.display.set_caption("Connect Four")
     screen = pygame.display.set_mode(WINDOW_SIZE)
-    # game's objects creation
-    fplayer = Player(True, RED, 'minmax', 3)
-    splayer = Player(False, GREEN, 'minmax', 3)
+    fplayer = Player(True, RED, 'minmax', 7)
+    splayer = Player(False, GREEN)
     game = Game(screen, 5, 4, fplayer, splayer)
-    # run script of game between bots
     winner = game.play()
     if winner is None:
         print("Draw!")
@@ -24,7 +22,6 @@ def main():
         print("First player won!")
     else:
         print("Second player won!")
-    # checking if close the window
     running = True
     while running:
         for event in pygame.event.get():
