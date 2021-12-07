@@ -1,4 +1,7 @@
 import math
+from copy import deepcopy
+import playground
+import random
 
 
 def count_value_appearances(data, label, value):
@@ -14,8 +17,27 @@ def count_value_appearances(data, label, value):
     """
     counter = 0
     for sample in data:
-        if data[label] == value:
+        if sample[label] == value:
             counter += 1
+    return counter
+
+
+def count_different_values(data, feature):
+    """Counts how many different feature values data has
+
+    Args:
+        data (list): data to analyze
+        feature (string): what feature we are looking for
+
+    Returns:
+        dict: how many different values feature has
+    """
+    counter = {}
+    for sample in data:
+        if sample[feature] in counter.keys():
+            counter[sample[feature]] += 1
+        else:
+            counter[sample[feature]] = 1
     return counter
 
 
@@ -37,6 +59,24 @@ def data_with_feature_value(data, feature, value):
     return new_data
 
 
+def remove_data_with_feature_value(data, feature, value):
+    """Removes rows from data with specified value of feature
+
+    Args:
+        data (list): data to cut
+        feature (string): feature to analyze
+        value (string): value that we cut off
+        
+    Returns:
+        list: data without rows with specified value of feature
+    """
+    new_data = []
+    for sample in data:
+        if sample[feature] != value:
+            new_data.append(sample)
+    return new_data
+
+
 def total_entropy(train_data, label, class_list):
     """Entropy of whole data
 
@@ -52,8 +92,10 @@ def total_entropy(train_data, label, class_list):
     entropy = 0
     for cl in class_list:
         class_count = count_value_appearances(train_data, label, cl)
-        class_entropy = -(class_count/total_row) * math.log(class_count, (2))
-        entropy += class_entropy
+        class_proba = class_count/total_row
+        if class_proba != 0:
+            class_entropy = -(class_proba) * math.log(class_proba, (2))
+            entropy += class_entropy
     return entropy
 
 
@@ -118,7 +160,7 @@ def most_valuable_feature(data, label, class_list):
     Returns:
         string: most valuable feature
     """
-    features = data[0].keys()
+    features = list(data[0])
     features = features[:-1]
     max_info_feature = ""
     max_info_gain = -1
@@ -130,9 +172,85 @@ def most_valuable_feature(data, label, class_list):
     return max_info_feature
 
 
-def generate_sub_tree():
-    pass
+def generate_subtree(feature, data, label, class_list):
+    """Generates nofe in tree and values as a branch
+
+    Args:
+        feature (string): feature that we want to add to tree
+        data (list): data we analyze
+        label (string): class name that we evaluate
+        class_list (list): values of label
+        
+    Returns:
+        dict, list: tree node with branches and updated data
+    """
+    features_values_count = count_different_values(data, feature)
+    tree = {}
+    class_count = {}
+    for feature_value, count in features_values_count.items():
+        feature_value_data = data_with_feature_value(data, feature, feature_value)
+        pure_class = False
+        for cl in class_list:
+            cl_count = count_value_appearances(feature_value_data, label, cl)
+            class_count[cl] = cl_count
+            if cl_count == count:
+                tree[feature_value] = cl
+                data = remove_data_with_feature_value(data, feature, feature_value)
+                pure_class = True
+        if not pure_class:
+            max_value = max(class_count.values())
+            classes_to_choose = [key for key, value in class_count.items() if value == max_value]
+            pred = random.choice(classes_to_choose)
+            tree[feature_value] = '?'+str(pred)
+    return tree, data
 
 
-def ID3_tree():
-    pass
+def make_tree(root, last_feat_value, data, label, class_list):
+    """Does tree by recursion
+
+    Args:
+        root (dict): currently pointed feature
+        last_feat_value (string): last value of pointed feature
+        data (list): data to generate tree
+        label (string): feature that we looking for
+        class_list (list): values of label
+    """
+    if len(data) != 0:
+        max_info_feature = most_valuable_feature(data, label, class_list)
+        tree, data = generate_subtree(max_info_feature, data, label, class_list)
+        next_root = None
+        if last_feat_value != None:
+            root[last_feat_value] = dict()
+            root[last_feat_value][max_info_feature] = tree
+            next_root = root[last_feat_value][max_info_feature]
+        else:
+            root[max_info_feature] = tree
+            next_root = root[max_info_feature]
+        for node, branch in next_root.items():
+            if '?' in branch:
+                data = data_with_feature_value(data, max_info_feature, node)
+                make_tree(next_root, node, data, label, class_list)
+        return
+
+
+def ID3_tree(data, label):
+    """Generates ID3 tree from provided data
+
+    Args:
+        data (list): data to build tree
+        label (string): feature we are evaluate
+
+    Returns:
+        dict: id3 tree
+    """
+    train_data = deepcopy(data)
+    tree = {}
+    class_list = count_different_values(data, label).keys()
+    make_tree(tree, None, train_data, label, class_list)
+    return tree
+
+
+if __name__ == "__main__":
+    data = playground.read_from_csv('data/car.data')
+    tree = ID3_tree(data, 'class')
+    print(tree)

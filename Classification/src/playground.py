@@ -56,7 +56,8 @@ def read_from_csv(path):
                         'doors': row[2],
                         'persons': row[3],
                         'lug_boot': row[4],
-                        'safety': row[5]}
+                        'safety': row[5],
+                        'class': row[6]}
             data.append(data_row)
     return data
 
