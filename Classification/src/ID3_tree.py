@@ -250,6 +250,17 @@ def ID3_tree(data, label):
     return tree
 
 
+def ID3_forest(data, label, times):
+    datas = playground.cross_validation(data, times)
+    trees = []
+    test_data = []
+    for data in datas:
+        train = data[0]
+        test_data += data[1]
+        trees.append(ID3_tree(train, label))
+    return trees, test_data
+
+
 if __name__ == "__main__":
     data = playground.read_from_csv('data/car.data')
     tree = ID3_tree(data, 'class')

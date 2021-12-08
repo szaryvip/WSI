@@ -82,7 +82,7 @@ def train_test_data(data, percent_to_train, mix):
     return train_data, test_data
 
 
-def cross_validation(train_data, times):
+def cross_validation(data, times):
     """Divide train data to train and validation data
 
     Args:
@@ -92,13 +92,13 @@ def cross_validation(train_data, times):
     Returns:
         list: list of train and validation datas
     """
-    border = len(train_data)//times
-    data = []
+    border = len(data)//times
+    datas = []
     for i in range(times-1):
-        validation_data = train_data[i*border:(i+1)*border]
-        train_data = train_data[:i*border] + train_data[(i+1)*border:]
-        data.append([train_data, validation_data])
-    return data
+        validation_data = data[i*border:(i+1)*border]
+        data = data[:i*border] + data[(i+1)*border:]
+        datas.append([data, validation_data])
+    return datas
 
 
 if __name__ == "__main__":
