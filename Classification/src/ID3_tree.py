@@ -1,4 +1,5 @@
 import math
+import json
 from copy import deepcopy
 import playground
 import random
@@ -251,6 +252,16 @@ def ID3_tree(data, label):
 
 
 def ID3_forest(data, label, times):
+    """Creates id3 trees using cross validation
+
+    Args:
+        data (list): data to cross
+        label (string): class to evaluate
+        times (int): number of crossing
+
+    Returns:
+        list, list: trees and test_data
+    """
     datas = playground.cross_validation(data, times)
     trees = []
     test_data = []
@@ -259,6 +270,11 @@ def ID3_forest(data, label, times):
         test_data += data[1]
         trees.append(ID3_tree(train, label))
     return trees, test_data
+
+
+def print_tree(tree):
+    """Prints tree in terminal"""
+    print(json.dumps(tree, sort_keys=False, indent=2))
 
 
 if __name__ == "__main__":

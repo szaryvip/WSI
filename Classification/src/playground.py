@@ -1,39 +1,29 @@
-# W ramach tego zadania będą musieli Państwo zaimplementować drzewo decyzyjne przy pomocy algorytmu ID3 
-# i przeprowadzić klasyfikację metodą k-krotnej walidacji krzyżowej dla zadanego zbioru danych.  
+# Recall  TPR = TP / (TP + FN) - ile ze wszystkich naprawdę pozytywnych 
+# przypadków udało nam się znaleźć (tzn. zaklasyfikować jako pozytywne). 
+# Ważne, jeśli zależy nam na wykrywalności a nie interesują nas fałszywe alarmy. 
+# Wadą jest to, że ignoruje połowę przypadków, więc model, który zawsze będzie 
+# zwracał true będzie miał TPR=1, co jest bezwartościowe.
 
-# Sprawdzić na wykresie czy można na podstawie parametrów obserwacji stwierdzić istnienie poszukiwanych grup klas 
-# (może są one liniowo separowalne w jakiejś kombinacji). Sugeruję zawrzeć w raporcie tylko te ciekawsze wykresy (2-3 z komentarzem!).  
+# Fall-out FPR = FP / (FP + TN) - stosunek fałszywych alarmów 
+# (ile niepoprawnie zaklasyfikowano pozytywnych ze wszystkich negatywnych).  
 
-# Sprawdzić jak podział danych na zbiór trenujący i testowy wpływa na sprawność modelu (poeksperymentować z proporcjami).
-# Czy widoczne są oznaki niedouczenia / przeuczenia modelu? 
-# (jeżeli ktoś będzie chciał robić to iteracyjnie nie ma sensu sprawdzić co 0,5-1%, proszę potestować co 5-10% zmian, 
-#  aby były widoczne jakieś różnice)  
+# Precision PPV = TP / (TP + FP) - ile z przewidzianych pozytywnych przypadków 
+# naprawdę jest pozytywnych. Wadą tej miary będzie przypadek, gdy dla zadania klasyfikacji 
+# "czy ktoś jest nieletni" to wszystkich emerytów zaklasyfikuje jako pełnoletnich a resztę 
+# obserwacji zignoruje. Recall będzie mały, ale Precision maksymalne. 
 
-# Sprawdzić wpływ parametru k na jakość klasyfikacji 
-# w przypadku walidacji krzyżowej (k=1,3,5,7,10,20)  
+# Accuracy ACC = (TP + TN) / (TP + TN + FP + FN) - ilość poprawnie 
+# przewidzianych w stosunku do wszystkich predykcji. 
+# Przykład kiedy to się nie sprawdza - dla lotów samolotowych w USA 
+# oznaczmy każdego pasażera jako nie-terrorysta. 
+# Przyjmując, że w latach 2000-2017 było średnio 800 mln pasażerów 
+# i tylko 17 wykrytych terrorystów to nasz model potrafi
+# ich identyfikować z ACC = 99,99999% 
 
-# Porównać efektywność modelu, kiedy zbiór trenujący jest wstępnie 
-# posortowany z przypadkiem, gdy dane zostaną specjalnie pomieszane  
-
-# Wyznaczyć macierz błędów (TP, FP, TN, FN) wraz z takimi miarami 
-# jak precyzja, czułość i dokładność modelu (sugerowałbym policzyć 
-# to ręcznie, ale pozwalam użyć do tego dedykowanych bibliotek)  
-
-# Zamieścić wygląd przykładowego drzewa utworzonego przy pomocy Państwa algorytmu  
-
- 
- 
-
-# Państwa implementacja klasyfikatora nie powinna zależeć od zadanego zbioru danych.
-# Powinna ona być na tyle ogólna jak się da, aczkolwiek nie wymagam implementacji 
-# dodatkowej funkcjonalności, poza tym co jest wymagane w tym zadaniu 
-# (tzn. nie muszą Państwo robić wsparcia dla parametrów funkcji, których nie będą używać)  
-
- 
-# Zadanie klasyfikacji oceny zakupu samochodu na podstawie informacji 
-# o jego specyfikacji. Zbiór tworzy 1728 obserwacji – 
-# 4 klasy z czego 1 jest dominująca (1210 obserwacji).  
-import ID3_tree
+# F1-score  F1 = (2 * Precision * Recall) / (Recall + Precision) -
+# próba stworzenia miary w oparciu o Recall 
+# i Precision (średnia harmoniczna). Pozwala porównywać modele, 
+# gdy jeden z tych parametrów jest mały a drugi duży. 
 import csv
 import random
 
