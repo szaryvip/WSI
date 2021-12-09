@@ -35,7 +35,7 @@ def count_different_values(data, feature):
     """
     counter = {}
     for sample in data:
-        if sample[feature] in counter.keys():
+        if sample[feature] in list(counter.keys()):
             counter[sample[feature]] += 1
         else:
             counter[sample[feature]] = 1

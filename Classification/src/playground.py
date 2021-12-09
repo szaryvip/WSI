@@ -26,6 +26,8 @@
 # gdy jeden z tych parametrów jest mały a drugi duży. 
 import csv
 import random
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def read_from_csv(path):
@@ -84,6 +86,8 @@ def cross_validation(data, times):
     """
     border = len(data)//times
     datas = []
+    if times == 1:
+        return [[data, data]]
     for i in range(times-1):
         validation_data = data[i*border:(i+1)*border]
         data = data[:i*border] + data[(i+1)*border:]
@@ -92,4 +96,28 @@ def cross_validation(data, times):
 
 
 if __name__ == "__main__":
-    pass
+    data = read_from_csv("data/car.data")
+    labels = ["vgood", "good", "acc", "unacc"]
+    atr_labels = ["low", "med", "high"]
+    colors = ["green", "blue", "yellow", "red"]
+    x = [[0, 0, 0],[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    for row in data:
+        for index,atr in enumerate(atr_labels):
+            if row["safety"] == atr:
+                if row["class"] == "vgood":
+                    x[0][index] += 1
+                if row["class"] == "good":
+                    x[1][index] += 1
+                if row["class"] == "acc":
+                    x[2][index] += 1
+                if row["class"] == "unacc":
+                    x[3][index] += 1
+                
+    fig = plt.figure()
+    x_multi = [np.random.randn(n) for n in [10000, 5000, 2000, 100]]
+    print(x_multi)
+    plt.hist(x_multi, 3, histtype="bar", label=labels, color=colors)
+    plt.xlabel("safety")
+    plt.ylabel("number of cars")
+    plt.legend()
+    plt.show()
