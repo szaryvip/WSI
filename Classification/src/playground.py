@@ -1,29 +1,3 @@
-# Recall  TPR = TP / (TP + FN) - ile ze wszystkich naprawdę pozytywnych 
-# przypadków udało nam się znaleźć (tzn. zaklasyfikować jako pozytywne). 
-# Ważne, jeśli zależy nam na wykrywalności a nie interesują nas fałszywe alarmy. 
-# Wadą jest to, że ignoruje połowę przypadków, więc model, który zawsze będzie 
-# zwracał true będzie miał TPR=1, co jest bezwartościowe.
-
-# Fall-out FPR = FP / (FP + TN) - stosunek fałszywych alarmów 
-# (ile niepoprawnie zaklasyfikowano pozytywnych ze wszystkich negatywnych).  
-
-# Precision PPV = TP / (TP + FP) - ile z przewidzianych pozytywnych przypadków 
-# naprawdę jest pozytywnych. Wadą tej miary będzie przypadek, gdy dla zadania klasyfikacji 
-# "czy ktoś jest nieletni" to wszystkich emerytów zaklasyfikuje jako pełnoletnich a resztę 
-# obserwacji zignoruje. Recall będzie mały, ale Precision maksymalne. 
-
-# Accuracy ACC = (TP + TN) / (TP + TN + FP + FN) - ilość poprawnie 
-# przewidzianych w stosunku do wszystkich predykcji. 
-# Przykład kiedy to się nie sprawdza - dla lotów samolotowych w USA 
-# oznaczmy każdego pasażera jako nie-terrorysta. 
-# Przyjmując, że w latach 2000-2017 było średnio 800 mln pasażerów 
-# i tylko 17 wykrytych terrorystów to nasz model potrafi
-# ich identyfikować z ACC = 99,99999% 
-
-# F1-score  F1 = (2 * Precision * Recall) / (Recall + Precision) -
-# próba stworzenia miary w oparciu o Recall 
-# i Precision (średnia harmoniczna). Pozwala porównywać modele, 
-# gdy jeden z tych parametrów jest mały a drugi duży. 
 import csv
 import random
 import matplotlib.pyplot as plt
@@ -97,27 +71,40 @@ def cross_validation(data, times):
 
 if __name__ == "__main__":
     data = read_from_csv("data/car.data")
-    labels = ["vgood", "good", "acc", "unacc"]
-    atr_labels = ["low", "med", "high"]
-    colors = ["green", "blue", "yellow", "red"]
-    x = [[0, 0, 0],[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    atr_labels = ["vhigh","high", "med", "low"]
+    vgood = [0,0,0,0]
+    good = [0,0,0,0]
+    acc = [0,0,0,0]
+    unacc = [0,0,0,0]
+    x = np.arange(len(atr_labels))
+    width = 0.20
     for row in data:
-        for index,atr in enumerate(atr_labels):
-            if row["safety"] == atr:
+        for index, atr in enumerate(atr_labels):
+            if row["buying"] == atr:
                 if row["class"] == "vgood":
-                    x[0][index] += 1
+                    vgood[index] += 1
                 if row["class"] == "good":
-                    x[1][index] += 1
+                    good[index] += 1
                 if row["class"] == "acc":
-                    x[2][index] += 1
+                    acc[index] += 1
                 if row["class"] == "unacc":
-                    x[3][index] += 1
-                
-    fig = plt.figure()
-    x_multi = [np.random.randn(n) for n in [10000, 5000, 2000, 100]]
-    print(x_multi)
-    plt.hist(x_multi, 3, histtype="bar", label=labels, color=colors)
-    plt.xlabel("safety")
-    plt.ylabel("number of cars")
-    plt.legend()
+                    unacc[index] += 1
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x-width*3/2, vgood, width, label='vgood', color='green')
+    rects2 = ax.bar(x-width/2, good, width, label='good', color='blue')
+    rects3 = ax.bar(x+width/2, acc, width, label='acc', color='orange')
+    rects4 = ax.bar(x+width*3/2, unacc, width, label='unacc', color='red')
+    
+    ax.set_ylabel("Number of rows")
+    plt.xticks(x, atr_labels)
+    ax.legend()
+    
+    ax.bar_label(rects1, padding=3)
+    ax.bar_label(rects2, padding=3)
+    ax.bar_label(rects3, padding=3)
+    ax.bar_label(rects4, padding=3)
+    
+    fig.tight_layout()
+    
     plt.show()
