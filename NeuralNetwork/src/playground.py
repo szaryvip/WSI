@@ -52,7 +52,6 @@
 import numpy as np
 import idx2numpy
 from copy import deepcopy
-import matplotlib.pyplot as plt
 
 
 def normalization(data):
