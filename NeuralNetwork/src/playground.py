@@ -56,25 +56,31 @@ import matplotlib.pyplot as plt
 
 
 def normalization(data):
-    pass
-
-
-def load_data_train(path):
-    data = idx2numpy.convert_from_file(path)
-    data = deepcopy(data)
-    # [[wiersz danych], label] --SZARY
-    # data[0][0] -- wiersz danych a data[0][1] -- label
-    # normalizacja TODO
-    np.random.shuffle(data)
+    for row in data:
+        max_value = np.amax(row[0])
+        for i in range(len(row)-1):
+            row[i] = row[i]/max_value
     return data
 
 
-def load_data_test(path):
-    pass
+def load_data(path_data, path_labels):
+    data = idx2numpy.convert_from_file(path_data)
+    data = deepcopy(data)
+    labels = idx2numpy.convert_from_file(path_labels)
+    labels = deepcopy(labels)
+    data_with_label = []
+    for row, label in zip(data, labels):
+        data_with_label.append([row, label])
+    data_with_label = normalization(data_with_label)
+    np.random.shuffle(data_with_label)
+    return data_with_label
 
 
 if __name__ == "__main__":
-    train = load_data_train('data/train-images.idx3-ubyte')
+    train = load_data('data/train-images.idx3-ubyte', 'data/train-labels.idx1-ubyte')
+    test = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
+    print(train[0])
+    # print(test[0])
 
 #TODO
 # klasa neuralnetwork -- nazwy jak na tej stronce https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/ potem pozmieniac
