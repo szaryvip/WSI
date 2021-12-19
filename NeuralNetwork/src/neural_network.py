@@ -22,14 +22,15 @@ class NeuralNetwork:
         return output * (1.0 - output)
 
     def backward_propagate_error(self, expected):
-        # szary TODO
+        # szary
         for layer in reversed(self._layers):
             errors = []
             if layer != self._output_layer:
-                error = 0.0
-                for index, neuron in enumerate(layer.get_next_layer()):
-                    error += neuron.get_weight() * neuron.get_delta()
-                errors.append(error)
+                for index in range(len(layer)):
+                    error = 0.0
+                    for neuron in layer.get_next_layer():
+                        error += neuron.get_weight()[index] * neuron.get_delta()
+                    errors.append(error)
             else:
                 for neuron in layer:
                     errors.append(neuron.get_output() - neuron.get_expected())
