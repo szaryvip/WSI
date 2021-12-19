@@ -1,5 +1,8 @@
+from typing import List
+
+
 class Neuron:
-    def __init__(self, weights):
+    def __init__(self, weights: List[float]):
         self._weights = weights
         self._output = 0
         self._delta = 0
@@ -7,7 +10,7 @@ class Neuron:
     def get_weight(self):
         return self._weights
 
-    def set_weight(self, weight, index):
+    def set_weight(self, weight: float, index: int):
         self._weights[index] = weight
 
     def get_output(self):

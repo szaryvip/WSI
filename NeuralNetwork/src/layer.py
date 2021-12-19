@@ -1,5 +1,5 @@
 class Layer:
-    def __init__(self, neurons):
+    def __init__(self, neurons: list):
         self._neurons = neurons
         self._next_layer = None
 
