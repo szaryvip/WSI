@@ -6,6 +6,9 @@ class NeuralNetwork:
     _neurons = []
     
     def __init__(self):
+        # TODO SZYMON
+        # tu musisz jakoś stworzyc neurony z losowymi wagami,
+        # calego inita zostawiam tobie
         self._neurons.append(Neuron())
 
     def transfer_derivate(output): 
