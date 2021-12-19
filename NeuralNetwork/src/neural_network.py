@@ -7,6 +7,7 @@ class NeuralNetwork:
     _output_layer = None
     _input_layer = None
     _layers = []
+    _activation_type = 'sigmoida'
     
     def __init__(self):
         # TODO SZYMON
@@ -16,9 +17,10 @@ class NeuralNetwork:
         pass
         
 
-    def transfer_derivate(output): 
+    def transfer_derivate(self, output): 
         # for sigmoid function --szary
-        return output * (1.0 - output)
+        if self._activation_type == "sigmoida":
+            return output * (1.0 - output)
 
     def backward_propagate_error(self, expected):
         # szary expected to wartosc ktora chcemy przewidziec
