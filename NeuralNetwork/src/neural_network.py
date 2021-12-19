@@ -34,7 +34,7 @@ class NeuralNetwork:
 
                 layer_neurons.append(Neuron(weights))
 
-            # add layers to the network
+            # add layer to the network
             self._hidden_layers.append(
                 Layer(layer_neurons)
             )
@@ -71,9 +71,13 @@ class NeuralNetwork:
         for index, layer in enumerate(self._layers):
             inputs = row
             if layer != self._input_layer:
-                inputs = [neuron.get_output() for neuron in self._layers[index-1]]
+                inputs = [
+                    neuron.get_output() for neuron in self._layers[index-1]
+                ]
             for neuron in layer:
                 for index, input in enumerate(inputs.flatten()):
-                    new_weight = neuron.get_weight()[index] - learning_rate * neuron.get_delta() * input
+                    new_weight = neuron.get_weight()[index] - learning_rate *\
+                        neuron.get_delta() * input
                     neuron.set_weight(new_weight, index)
-                neuron.get_weight()[-1] = neuron.get_weight()[-1] - learning_rate * neuron.get_delta()
+                neuron.get_weight()[-1] = neuron.get_weight()[-1] -\
+                    learning_rate * neuron.get_delta()
