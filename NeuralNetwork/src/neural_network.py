@@ -1,6 +1,9 @@
 import numpy as np
 from math import exp
 from neuron import Neuron
+from layer import Layer
+import random
+
 
 class NeuralNetwork:
     _hidden_layers = []
@@ -8,16 +11,40 @@ class NeuralNetwork:
     _input_layer = None
     _layers = []
     _activation_type = 'sigmoida'
-    
-    def __init__(self):
+
+    def __init__(
+        self,
+        hidden_layers_number: int,
+        neurons_in_layer_number: int
+    ):
         # TODO SZYMON
         # tu musisz jakoś stworzyc neurony z losowymi wagami,
         # i dać je do layerów chyba
         # calego inita zostawiam tobie
-        pass
-        
 
-    def transfer_derivate(self, output): 
+        for _ in range(hidden_layers_number):
+            layer_neurons = []
+
+            # create layer neurons
+            for _ in range(neurons_in_layer_number):
+                weights = [
+                    random.uniform(-1, 1)
+                    for _ in range(neurons_in_layer_number)
+                ]
+
+                layer_neurons.append(Neuron(weights))
+
+            # add layers to the network
+            self._hidden_layers.append(
+                Layer(layer_neurons)
+            )
+
+            # set new layer as "next_layer" of previous layer
+            self._layers[-2].set_next_layer(self._layers[-1])
+
+        return self
+
+    def transfer_derivate(self, output):
         # for sigmoid function --szary
         if self._activation_type == "sigmoida":
             return output * (1.0 - output)
@@ -37,8 +64,8 @@ class NeuralNetwork:
                     errors.append(neuron.get_output() - expected)
             for index, neuron in enumerate(layer):
                 delta = errors[index] * self.transfer_derivate(neuron.get_output())
-                neuron.set_delta(delta)                   
-    
+                neuron.set_delta(delta)
+
     def update_weights(self, row, learning_rate):
         # szary row to matrix znormalizowany z danych trenujacych
         for index, layer in enumerate(self._layers):
