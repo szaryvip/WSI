@@ -52,6 +52,7 @@
 import numpy as np
 import idx2numpy
 from copy import deepcopy
+from neural_network import NeuralNetwork
 
 
 def normalization(data):
@@ -78,14 +79,26 @@ def load_data(path_data, path_labels):
 if __name__ == "__main__":
     train = load_data('data/train-images.idx3-ubyte', 'data/train-labels.idx1-ubyte')
     test = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
-    print(train[0])
-    # print(test[0])
+    # print(train[0])
 
-#TODO
+    Chad = NeuralNetwork(2, 2, 2, 2)
+
+    print(
+        Chad.forward_propagate(
+            [0.2, 0.5]
+        )
+    )
+    print(
+        Chad.predict(
+            [0.2, 0.5]
+        )
+    )
+
+# TODO
 # klasa neuralnetwork -- nazwy jak na tej stronce https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/ potem pozmieniac
 # -init_network -- Szymon
     # -inicjalizacja wag losowych (wylosować wagi randomowo)
-# -train_network 
+# -train_network
     # -funkcja aktywacji (wagi * input) -- szymon
     # -transfer (przerzucam to co wyszlo z funkcji aktywacji przez np sigmoida) --szymon
     # -forward_propagate --szymon
@@ -99,4 +112,3 @@ if __name__ == "__main__":
 # pisanie sprawka -- szary
 
 # porownanie z tensorflow -- do ustalenia (dodatkowa)
-
