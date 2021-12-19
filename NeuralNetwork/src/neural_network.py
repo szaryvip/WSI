@@ -1,9 +1,12 @@
 import numpy as np
 from math import exp
+from neuron import Neuron
 
 class NeuralNetwork:
-    pass
-
+    _neurons = []
+    
+    def __init__(self):
+        self._neurons.append(Neuron())
 
     def transfer_derivate(output): 
         # for sigmoid function --szary
