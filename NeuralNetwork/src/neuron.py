@@ -27,7 +27,7 @@ class Neuron:
     def set_delta(self, delta):
         self._delta = delta
 
-    def activation(self, inputs):
+    def activate(self, inputs):
         weights = self._weights
 
         return sum(
@@ -37,8 +37,16 @@ class Neuron:
             ]
         ) + self._bias
 
-    def transfer(self, inputs, activation='sigmoid'):
-        if activation == 'sigmoid':
-            return 1 / (1 + exp(-self.activation(inputs)))
+    def transfer(self, activation, activation_function='sigmoid'):
+        if activation_function == 'sigmoid':
+            return 1 / (1 + exp(-activation))
         else:
-            return max(0, self.activation(inputs))
+            return max(0, activation)
+
+    def update_output(self, inputs):
+        output = self.transfer(
+            self.activate(inputs)
+        )
+        self.set_output(output)
+
+        return output
