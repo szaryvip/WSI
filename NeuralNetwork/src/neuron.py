@@ -1,11 +1,13 @@
 from typing import List
+from math import exp
 
 
 class Neuron:
-    def __init__(self, weights: List[float]):
+    def __init__(self, weights: List[float], bias=0):
         self._weights = weights
         self._output = 0
         self._delta = 0
+        self._bias = bias
 
     def get_weight(self):
         return self._weights
@@ -24,3 +26,19 @@ class Neuron:
 
     def set_delta(self, delta):
         self._delta = delta
+
+    def activation(self, inputs):
+        weights = self._weights
+
+        return sum(
+            [
+                input * weight
+                for input, weight in zip(inputs, weights)
+            ]
+        ) + self._bias
+
+    def transfer(self, inputs, activation='sigmoid'):
+        if activation == 'sigmoid':
+            return 1 / (1 + exp(-self.activation(inputs)))
+        else:
+            return max(0, self.activation(inputs))
