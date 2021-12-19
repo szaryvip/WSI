@@ -1,5 +1,6 @@
 class Layer:
     _next_layer = None
+    _neurons = []
     
     def __init__(self):
         pass

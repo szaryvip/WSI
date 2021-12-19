@@ -1,20 +1,18 @@
 class Neuron:
-    _weight = None
+    _weights = None
     _delta = None
     _output = None
-    _expected = None
     
     def __init__(self):
-        self._weight
+        self._weights
         self._output
         self._delta
-        self._expected
         
     def get_weight(self):
-        return self._weight
+        return self._weights
         
     def set_weight(self, weight, index):
-        self._weight[index] = weight
+        self._weights[index] = weight
     
     def get_output(self):
         return self._output
@@ -27,10 +25,4 @@ class Neuron:
         
     def set_delta(self, delta):
         self._delta = delta
-    
-    def get_expected(self):
-        return self._expected
-    
-    def set_expected(self, expected):
-        self._expected = expected
     

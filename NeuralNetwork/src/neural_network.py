@@ -3,7 +3,6 @@ from math import exp
 from neuron import Neuron
 
 class NeuralNetwork:
-    _neurons = []
     _hidden_layers = []
     _output_layer = None
     _input_layer = None
@@ -22,7 +21,7 @@ class NeuralNetwork:
         return output * (1.0 - output)
 
     def backward_propagate_error(self, expected):
-        # szary
+        # szary expected to wartosc ktora chcemy przewidziec
         for layer in reversed(self._layers):
             errors = []
             if layer != self._output_layer:
@@ -33,13 +32,13 @@ class NeuralNetwork:
                     errors.append(error)
             else:
                 for neuron in layer:
-                    errors.append(neuron.get_output() - neuron.get_expected())
+                    errors.append(neuron.get_output() - expected)
             for index, neuron in enumerate(layer):
                 delta = errors[index] * self.transfer_derivate(neuron.get_output())
                 neuron.set_delta(delta)                   
     
     def update_weights(self, row, learning_rate):
-        # szary
+        # szary row to matrix znormalizowany z danych trenujacych
         for index, layer in enumerate(self._layers):
             inputs = row
             if layer != self._input_layer:
