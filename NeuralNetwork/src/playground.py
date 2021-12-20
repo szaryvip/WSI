@@ -81,17 +81,9 @@ if __name__ == "__main__":
     test = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
     # print(train[0])
 
-    Chad = NeuralNetwork(2, 2, 2, 2)
-
+    Chad = NeuralNetwork(2, 20, 2)
     print(
-        Chad.forward_propagate(
-            [0.2, 0.5]
-        )
-    )
-    print(
-        Chad.predict(
-            [0.2, 0.5]
-        )
+        Chad.back_propagation(train, test, 0.1)
     )
 
 # TODO

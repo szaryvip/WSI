@@ -1,3 +1,4 @@
+import numpy as np
 from neuron import Neuron
 from layer import Layer
 import random
@@ -8,6 +9,7 @@ class NeuralNetwork:
     _layers = []
     _hidden_layers = []
     _output_layer = []
+    _epochs_number = None
     inputs_number = None
     outputs_number = None
     _activation_type = 'sigmoid'
@@ -16,6 +18,7 @@ class NeuralNetwork:
         self,
         hidden_layers_number: int,
         neurons_in_layer_number: int,
+        epochs_number: int = 1,
         inputs_number: int = 28 * 28,
         outputs_number: int = 10,
         activation_type: str = 'sigmoid'
@@ -23,6 +26,7 @@ class NeuralNetwork:
         self._inputs_number = inputs_number
         self._outputs_number = outputs_number
         self._activation_type = activation_type
+        self._epochs_number = epochs_number
 
         # add hidden layers
         for layer_number in range(hidden_layers_number+1):
@@ -57,7 +61,7 @@ class NeuralNetwork:
             if len(self._layers) > 1:
                 self._layers[-2].set_next_layer(self._layers[-1])
 
-        self.hidden_layers = self._layers[:-1]
+        self._hidden_layers = self._layers[:-1]
         self._output_layer = self._layers[-1]
 
     def forward_propagate(self, inputs: List[float]):
@@ -91,14 +95,14 @@ class NeuralNetwork:
                             neuron.get_delta()
                     errors.append(error)
             else:
-                for neuron in layer.get_neurons():
-                    errors.append(neuron.get_output() - expected)
+                for index, neuron in enumerate(layer.get_neurons()):
+                    errors.append(neuron.get_output() - expected[index])
             for index, neuron in enumerate(layer.get_neurons()):
                 delta = errors[index] * neuron.transfer_derivate(
                                         self._activation_type)
                 neuron.set_delta(delta)
 
-    def update_weights(self, row: List[float], learning_rate: float):
+    def update_weights(self, row: np.array, learning_rate: float):
         # row to matrix znormalizowany z danych trenujacych
         for index, layer in enumerate(self._layers):
             inputs = row
@@ -108,12 +112,28 @@ class NeuralNetwork:
                     self._layers[index-1].get_neurons()
                 ]
             for neuron in layer.get_neurons():
-                for index, input in enumerate(inputs.flatten()):
+                for index, input in enumerate(inputs):
                     new_weight = neuron.get_weight()[index] - learning_rate *\
                         neuron.get_delta() * input
                     neuron.set_weight(new_weight, index)
                 neuron.get_weight()[-1] = neuron.get_weight()[-1] -\
                     learning_rate * neuron.get_delta()
 
-    def train(self, data: List[float], learning_rate: int):
-        pass
+    def train(self, data: np.array, learning_rate: int):
+        for epoch in range(self._epochs_number):
+            for row in data:
+                row[0].flatten()
+                self.forward_propagate(row[0])
+                expected = [0 for _ in range(self._outputs_number)]
+                expected[row[1]] = 1
+                self.backward_propagate_error(expected)
+                self.update_weights(row[0], learning_rate)
+
+    def back_propagation(self, train: List[float], test: List[float],
+                         learning_rate: int):
+        self.train(train, learning_rate)
+        predictions = []
+        for row in test:
+            pred = self.predict(row)
+            predictions.append(pred)
+        return predictions
