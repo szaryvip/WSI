@@ -1,5 +1,3 @@
-import numpy as np
-from math import exp
 from neuron import Neuron
 from layer import Layer
 import random
@@ -57,7 +55,7 @@ class NeuralNetwork:
 
             # set new layer as "next_layer" of previous layer
             if len(self._layers) > 1:
-                self._hidden_layers[-2].set_next_layer(self._layers[-1])
+                self._layers[-2].set_next_layer(self._layers[-1])
 
         self.hidden_layers = self._layers[:-1]
         self._output_layer = self._layers[-1]
@@ -82,7 +80,7 @@ class NeuralNetwork:
         return max(outputs)
 
     def backward_propagate_error(self, expected: int):
-        # szary expected to wartosc ktora chcemy przewidziec
+        # expected to wartosc ktora chcemy przewidziec
         for layer in reversed(self._layers):
             errors = []
             if layer != self._output_layer:
@@ -96,18 +94,20 @@ class NeuralNetwork:
                 for neuron in layer.get_neurons():
                     errors.append(neuron.get_output() - expected)
             for index, neuron in enumerate(layer.get_neurons()):
-                delta = errors[index] * neuron.transfer_derivate(self._activation_type)
+                delta = errors[index] * neuron.transfer_derivate(
+                                        self._activation_type)
                 neuron.set_delta(delta)
 
     def update_weights(self, row: List[float], learning_rate: float):
-        # szary row to matrix znormalizowany z danych trenujacych
+        # row to matrix znormalizowany z danych trenujacych
         for index, layer in enumerate(self._layers):
             inputs = row
-            if layer != self._input_layer:
+            if layer != self._hidden_layers[0]:
                 inputs = [
-                    neuron.get_output() for neuron in self._layers[index-1]
+                    neuron.get_output() for neuron in
+                    self._layers[index-1].get_neurons()
                 ]
-            for neuron in layer:
+            for neuron in layer.get_neurons():
                 for index, input in enumerate(inputs.flatten()):
                     new_weight = neuron.get_weight()[index] - learning_rate *\
                         neuron.get_delta() * input
