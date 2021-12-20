@@ -63,14 +63,15 @@ def normalization(data):
     return data
 
 
-def load_data(path_data, path_labels):
+def load_data(path_data: str, path_labels: str) -> np.ndarray:
     data = idx2numpy.convert_from_file(path_data)
     data = deepcopy(data)
     labels = idx2numpy.convert_from_file(path_labels)
     labels = deepcopy(labels)
     data_with_label = []
     for image, label in zip(data, labels):
-        image = np.array(image).flatten().tolist()
+        # it takes more than 15 seconds for data to load when using lists
+        image = image.flatten()
         data_with_label.append([image, label])
     data_with_label = normalization(data_with_label)
     np.random.shuffle(data_with_label)
@@ -78,16 +79,23 @@ def load_data(path_data, path_labels):
 
 
 if __name__ == "__main__":
-    training_data = load_data('data/train-images.idx3-ubyte', 'data/train-labels.idx1-ubyte')
-    test_data = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
+    training_data = load_data(
+        'data/train-images.idx3-ubyte',
+        'data/train-labels.idx1-ubyte'
+    )
+    test_data = load_data(
+        'data/t10k-images.idx3-ubyte',
+        'data/t10k-labels.idx1-ubyte'
+    )
     # print(train[0])
 
     print('Data Loaded')
+    # quit()
 
     Chad = NeuralNetwork(
         hidden_layers_number=2,
         neurons_in_layer_number=10,
-        epochs_number=100
+        epochs_number=10
     )
 
     print(

@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 from neuron import Neuron
 from layer import Layer
 import random
@@ -119,7 +119,7 @@ class NeuralNetwork:
                 neuron.get_weight()[-1] = neuron.get_weight()[-1] -\
                     learning_rate * neuron.get_delta()
 
-    def train(self, data: List[list], learning_rate: int):
+    def train(self, data: np.ndarray, learning_rate: int):
         for epoch in range(self._epochs_number):
             print(f'epoch: {epoch}/{self._epochs_number}')
             for row in data:
@@ -133,8 +133,8 @@ class NeuralNetwork:
 
     def back_propagation(
         self,
-        training_data: List[float],
-        test_data: List[float],
+        training_data: np.ndarray,
+        test_data: np.ndarray,
         learning_rate: int
     ):
         self.train(training_data, learning_rate)
