@@ -47,6 +47,13 @@ class Neuron:
         else:
             return max(0, activation)
 
+    def transfer_derivate(self, activation_function:str):
+        # for sigmoid function --szary
+        if activation_function == "sigmoid":
+            return self._output * (1.0 - self._output)
+        else:
+            pass
+
     def update_output(self, inputs: list):
         output = self.transfer(
             self.activate(inputs)

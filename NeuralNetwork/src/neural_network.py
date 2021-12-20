@@ -81,13 +81,6 @@ class NeuralNetwork:
         outputs = self.forward_propagate(inputs)
         return max(outputs)
 
-    def transfer_derivate(self, output: float):
-        # for sigmoid function --szary
-        if self._activation_type == "sigmoid":
-            return output * (1.0 - output)
-        else:
-            pass
-
     def backward_propagate_error(self, expected: int):
         # szary expected to wartosc ktora chcemy przewidziec
         for layer in reversed(self._layers):
@@ -95,21 +88,15 @@ class NeuralNetwork:
             if layer != self._output_layer:
                 for index in range(len(layer)):
                     error = 0.0
-                    # TODO: tu chyba layer.get_neurons() zamiast layer
-                    for neuron in layer.get_next_layer():
+                    for neuron in layer.get_next_layer().get_neurons():
                         error += neuron.get_weight()[index] *\
                             neuron.get_delta()
                     errors.append(error)
             else:
-                # TODO: tu chyba layer.get_neurons() zamiast layer
-                for neuron in layer:
+                for neuron in layer.get_neurons():
                     errors.append(neuron.get_output() - expected)
-
-            # TODO: tu chyba layer.get_neurons() zamiast layer
-            for index, neuron in enumerate(layer):
-                delta = errors[index] * self.transfer_derivate(
-                    neuron.get_output()
-                )
+            for index, neuron in enumerate(layer.get_neurons()):
+                delta = errors[index] * neuron.transfer_derivate(self._activation_type)
                 neuron.set_delta(delta)
 
     def update_weights(self, row: List[float], learning_rate: float):
