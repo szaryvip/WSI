@@ -56,6 +56,14 @@ from neural_network import NeuralNetwork
 
 
 def normalization(data):
+    """Normalizes data
+
+    Args:
+        data (List[float]): data to normalize
+
+    Returns:
+        List[float]: data after normalization
+    """
     for row in data:
         max_value = np.amax(row[0])
         for i in range(len(row)-1):
@@ -64,6 +72,15 @@ def normalization(data):
 
 
 def load_data(path_data: str, path_labels: str) -> np.ndarray:
+    """Loads data from idx1 and idx3 format
+
+    Args:
+        path_data (str): path to data
+        path_labels (str): path to data's labels
+
+    Returns:
+        np.ndarray: normalized data with labels
+    """
     data = idx2numpy.convert_from_file(path_data)
     data = deepcopy(data)
     labels = idx2numpy.convert_from_file(path_labels)

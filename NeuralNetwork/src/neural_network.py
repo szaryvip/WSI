@@ -23,6 +23,18 @@ class NeuralNetwork:
         outputs_number: int = 10,
         activation_type: str = 'sigmoid'
     ):
+        """Initializes NeuralNetwork object
+
+        Args:
+            hidden_layers_number (int): number of hidden layers
+            neurons_in_layer_number (int): number of neuron in each hidden layer
+            epochs_number (int, optional): How many iteraction will be done. Defaults to 1.
+            inputs_number (int, optional): Size of input. Defaults to 28*28.
+            outputs_number (int, optional): Size of output. Defaults to 10.
+            activation_type (str, optional): What function is
+                        used for activation (sigmoid or relu). 
+                        Defaults to 'sigmoid'.
+        """
         self._inputs_number = inputs_number
         self._outputs_number = outputs_number
         self._activation_type = activation_type
@@ -65,6 +77,19 @@ class NeuralNetwork:
         self._output_layer = self._layers[-1]
 
     def forward_propagate(self, inputs: List[float]):
+        """Propagating input signal and generate outputs
+        through each layer
+
+        Args:
+            inputs (List[float]): data
+
+        Raises:
+            ValueError: raise when number of inputs is
+                        not correct
+
+        Returns:
+            List[float]: output of output layer
+        """
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
 
@@ -77,6 +102,18 @@ class NeuralNetwork:
         return outputs
 
     def predict(self, inputs: List[float]):
+        """Generates prediction from network
+
+        Args:
+            inputs (List[float]): data to predict
+
+        Raises:
+            ValueError: raise when number of inputs
+                        is not correct
+
+        Returns:
+            int: predicted value
+        """
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
 
@@ -84,7 +121,12 @@ class NeuralNetwork:
         return outputs.index(max(outputs))
 
     def backward_propagate_error(self, expected: int):
-        # expected to wartosc ktora chcemy przewidziec
+        """Calculates error for each output neuron
+        and propogate error signal backwards through network
+
+        Args:
+            expected (int): expected output value
+        """
         for layer in reversed(self._layers):
             errors = []
             if layer != self._output_layer:
@@ -103,7 +145,12 @@ class NeuralNetwork:
                 neuron.set_delta(delta)
 
     def update_weights(self, row: List[list], learning_rate: float):
-        # row to matrix znormalizowany z danych trenujacych
+        """Updates weights in network
+
+        Args:
+            row (List[list]): input data
+            learning_rate (float): hyper parameter of neural network
+        """
         for index, layer in enumerate(self._layers):
             inputs = row
             if layer != self._hidden_layers[0]:
@@ -120,6 +167,12 @@ class NeuralNetwork:
                     learning_rate * neuron.get_delta()
 
     def train(self, data: np.ndarray, learning_rate: int):
+        """Train network epochs-time for each row in data
+
+        Args:
+            data (np.ndarray): input data to train
+            learning_rate (int): hyper parameter
+        """     
         for epoch in range(self._epochs_number):
             print(f'epoch: {epoch+1}/{self._epochs_number}')
             for row in data:
@@ -137,6 +190,17 @@ class NeuralNetwork:
         test_data: np.ndarray,
         learning_rate: int
     ):
+        """Backpropagation using gradient descent.
+        Predicts output for test_data.
+
+        Args:
+            training_data (np.ndarray): data to train
+            test_data (np.ndarray): data to predict output
+            learning_rate (int): hyper parameter
+
+        Returns:
+            List[int]: predictions for each test data
+        """
         self.train(training_data, learning_rate)
         predictions = []
         for row in test_data:
