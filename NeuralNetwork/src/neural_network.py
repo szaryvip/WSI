@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 from neuron import Neuron
 from layer import Layer
 import random
@@ -102,7 +102,7 @@ class NeuralNetwork:
                                         self._activation_type)
                 neuron.set_delta(delta)
 
-    def update_weights(self, row: np.array, learning_rate: float):
+    def update_weights(self, row: List[list], learning_rate: float):
         # row to matrix znormalizowany z danych trenujacych
         for index, layer in enumerate(self._layers):
             inputs = row
@@ -119,21 +119,28 @@ class NeuralNetwork:
                 neuron.get_weight()[-1] = neuron.get_weight()[-1] -\
                     learning_rate * neuron.get_delta()
 
-    def train(self, data: np.array, learning_rate: int):
+    def train(self, data: List[list], learning_rate: int):
         for epoch in range(self._epochs_number):
+            print(f'epoch: {epoch}/{self._epochs_number}')
             for row in data:
-                row[0].flatten()
-                self.forward_propagate(row[0])
+                image = row[0]
+                label = row[1]
+                self.forward_propagate(image)
                 expected = [0 for _ in range(self._outputs_number)]
-                expected[row[1]] = 1
+                expected[label] = 1
                 self.backward_propagate_error(expected)
-                self.update_weights(row[0], learning_rate)
+                self.update_weights(image, learning_rate)
 
-    def back_propagation(self, train: List[float], test: List[float],
-                         learning_rate: int):
-        self.train(train, learning_rate)
+    def back_propagation(
+        self,
+        training_data: List[float],
+        test_data: List[float],
+        learning_rate: int
+    ):
+        self.train(training_data, learning_rate)
         predictions = []
-        for row in test:
-            pred = self.predict(row)
-            predictions.append(pred)
+        for row in test_data:
+            image = row[0]
+            prediction = self.predict(image)
+            predictions.append(prediction)
         return predictions

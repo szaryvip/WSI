@@ -69,21 +69,33 @@ def load_data(path_data, path_labels):
     labels = idx2numpy.convert_from_file(path_labels)
     labels = deepcopy(labels)
     data_with_label = []
-    for row, label in zip(data, labels):
-        data_with_label.append([row, label])
+    for image, label in zip(data, labels):
+        image = np.array(image).flatten().tolist()
+        data_with_label.append([image, label])
     data_with_label = normalization(data_with_label)
     np.random.shuffle(data_with_label)
     return data_with_label
 
 
 if __name__ == "__main__":
-    train = load_data('data/train-images.idx3-ubyte', 'data/train-labels.idx1-ubyte')
-    test = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
+    training_data = load_data('data/train-images.idx3-ubyte', 'data/train-labels.idx1-ubyte')
+    test_data = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
     # print(train[0])
 
-    Chad = NeuralNetwork(2, 20, 2)
+    print('Data Loaded')
+
+    Chad = NeuralNetwork(
+        hidden_layers_number=2,
+        neurons_in_layer_number=10,
+        epochs_number=100
+    )
+
     print(
-        Chad.back_propagation(train, test, 0.1)
+        Chad.back_propagation(
+            training_data[:100],
+            test_data[:20],
+            0.1
+        )
     )
 
 # TODO
