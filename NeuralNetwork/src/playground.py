@@ -100,12 +100,13 @@ if __name__ == "__main__":
 
     print(
         Chad.back_propagation(
-            training_data[:100],
+            training_data[:1000],
             test_data[:20],
-            0.1
+            1
         )
     )
 
+    print([i[1] for i in test_data[:20]])
 # TODO
 # klasa neuralnetwork -- nazwy jak na tej stronce https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/ potem pozmieniac
 # -init_network -- Szymon

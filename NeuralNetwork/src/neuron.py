@@ -44,15 +44,18 @@ class Neuron:
     ):
         if activation_function == 'sigmoid':
             return 1 / (1 + exp(-activation))
-        else:
+        if activation_function == 'relu':
             return max(0, activation)
 
     def transfer_derivate(self, activation_function: str):
         # for sigmoid function --szary
         if activation_function == "sigmoid":
             return self._output * (1.0 - self._output)
-        else:
-            pass
+        if activation_function == 'relu':
+            if self._output >= 0:
+                return 1
+            else:
+                return 0
 
     def update_output(self, inputs: list):
         output = self.transfer(

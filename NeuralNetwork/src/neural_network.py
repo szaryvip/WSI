@@ -81,7 +81,7 @@ class NeuralNetwork:
             raise ValueError('Invalid number of inputs')
 
         outputs = self.forward_propagate(inputs)
-        return max(outputs)
+        return outputs.index(max(outputs))
 
     def backward_propagate_error(self, expected: int):
         # expected to wartosc ktora chcemy przewidziec
@@ -121,7 +121,7 @@ class NeuralNetwork:
 
     def train(self, data: np.ndarray, learning_rate: int):
         for epoch in range(self._epochs_number):
-            print(f'epoch: {epoch}/{self._epochs_number}')
+            print(f'epoch: {epoch+1}/{self._epochs_number}')
             for row in data:
                 image = row[0]
                 label = row[1]
