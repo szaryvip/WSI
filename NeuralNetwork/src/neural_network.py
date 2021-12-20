@@ -3,6 +3,8 @@ from neuron import Neuron
 from layer import Layer
 import random
 from typing import List
+import time
+import os
 
 
 class NeuralNetwork:
@@ -27,18 +29,20 @@ class NeuralNetwork:
 
         Args:
             hidden_layers_number (int): number of hidden layers
-            neurons_in_layer_number (int): number of neuron in each hidden layer
-            epochs_number (int, optional): How many iteraction will be done. Defaults to 1.
+            neurons_in_layer_number (int): number of neuron in each hidden
+            layer epochs_number (int, optional):
+            How many iteractionwill be done. Defaults to 1.
             inputs_number (int, optional): Size of input. Defaults to 28*28.
             outputs_number (int, optional): Size of output. Defaults to 10.
             activation_type (str, optional): What function is
-                        used for activation (sigmoid or relu). 
+                        used for activation (sigmoid or relu).
                         Defaults to 'sigmoid'.
         """
         self._inputs_number = inputs_number
         self._outputs_number = outputs_number
         self._activation_type = activation_type
         self._epochs_number = epochs_number
+        self._start_time = time.time()
 
         # add hidden layers
         for layer_number in range(hidden_layers_number+1):
@@ -75,6 +79,22 @@ class NeuralNetwork:
 
         self._hidden_layers = self._layers[:-1]
         self._output_layer = self._layers[-1]
+
+    def estimate_time(self, epochs_done):
+        if epochs_done == 0:
+            time_left = '?'
+        else:
+            epochs_left = self._epochs_number - epochs_done
+            elapsed_time = time.time() - self._start_time
+            duration_of_epoch = elapsed_time / (epochs_done)
+            time_left = str(round(epochs_left * duration_of_epoch))
+            time_left += 's'
+
+        os.system('clear')
+        print(
+            f'Epoch: {epochs_done + 1}/{self._epochs_number}'
+            f' | Time left: {time_left}'
+        )
 
     def forward_propagate(self, inputs: List[float]):
         """Propagating input signal and generate outputs
@@ -172,9 +192,11 @@ class NeuralNetwork:
         Args:
             data (np.ndarray): input data to train
             learning_rate (int): hyper parameter
-        """     
+        """
+
         for epoch in range(self._epochs_number):
-            print(f'epoch: {epoch+1}/{self._epochs_number}')
+            self.estimate_time(epoch)
+
             for row in data:
                 image = row[0]
                 label = row[1]
@@ -183,6 +205,8 @@ class NeuralNetwork:
                 expected[label] = 1
                 self.backward_propagate_error(expected)
                 self.update_weights(image, learning_rate)
+
+        os.system('clear')
 
     def back_propagation(
         self,
