@@ -3,11 +3,13 @@ from math import exp
 from neuron import Neuron
 from layer import Layer
 import random
+from typing import List
 
 
 class NeuralNetwork:
     _layers = []
     _hidden_layers = []
+    _output_layer = []
     inputs_number = None
     outputs_number = None
     _activation_type = 'sigmoid'
@@ -53,14 +55,14 @@ class NeuralNetwork:
             # add layer to the network
             self._layers.append(layer)
 
-            # # set new layer as "next_layer" of previous layer
-            # if len(self._layers) > 1:
-            #     self._hidden_layers[-2].set_next_layer(self._layers[-1])
+            # set new layer as "next_layer" of previous layer
+            if len(self._layers) > 1:
+                self._hidden_layers[-2].set_next_layer(self._layers[-1])
 
         self.hidden_layers = self._layers[:-1]
         self._output_layer = self._layers[-1]
 
-    def forward_propagate(self, inputs):
+    def forward_propagate(self, inputs: List[float]):
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
 
@@ -72,41 +74,45 @@ class NeuralNetwork:
             inputs = outputs
         return outputs
 
-    def predict(self, inputs):
+    def predict(self, inputs: List[float]):
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
 
         outputs = self.forward_propagate(inputs)
         return max(outputs)
 
-    def transfer_derivate(self, output):
+    def transfer_derivate(self, output: float):
         # for sigmoid function --szary
         if self._activation_type == "sigmoid":
             return output * (1.0 - output)
         else:
             pass
 
-    def backward_propagate_error(self, expected):
+    def backward_propagate_error(self, expected: int):
         # szary expected to wartosc ktora chcemy przewidziec
         for layer in reversed(self._layers):
             errors = []
             if layer != self._output_layer:
                 for index in range(len(layer)):
                     error = 0.0
+                    # TODO: tu chyba layer.get_neurons() zamiast layer
                     for neuron in layer.get_next_layer():
                         error += neuron.get_weight()[index] *\
                             neuron.get_delta()
                     errors.append(error)
             else:
+                # TODO: tu chyba layer.get_neurons() zamiast layer
                 for neuron in layer:
                     errors.append(neuron.get_output() - expected)
+
+            # TODO: tu chyba layer.get_neurons() zamiast layer
             for index, neuron in enumerate(layer):
                 delta = errors[index] * self.transfer_derivate(
                     neuron.get_output()
                 )
                 neuron.set_delta(delta)
 
-    def update_weights(self, row, learning_rate):
+    def update_weights(self, row: List[float], learning_rate: float):
         # szary row to matrix znormalizowany z danych trenujacych
         for index, layer in enumerate(self._layers):
             inputs = row
@@ -121,3 +127,6 @@ class NeuralNetwork:
                     neuron.set_weight(new_weight, index)
                 neuron.get_weight()[-1] = neuron.get_weight()[-1] -\
                     learning_rate * neuron.get_delta()
+
+    def train(self, data: List[float], learning_rate: int):
+        pass
