@@ -99,19 +99,19 @@ class NeuralNetwork:
             f' | Time left: {time_left}'
         )
 
-    def forward_propagate(self, inputs: List[float]):
+    def forward_propagate(self, inputs: np.ndarray):
         """Propagating input signal and generate outputs
         through each layer
 
         Args:
-            inputs (List[float]): data
+            inputs (np.ndarray): data
 
         Raises:
             ValueError: raise when number of inputs is
                         not correct
 
         Returns:
-            List[float]: output of output layer
+            np.ndarray: output of output layer
         """
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
@@ -124,25 +124,24 @@ class NeuralNetwork:
             inputs = outputs
         return outputs
 
-    def softmax(self, outputs: List[float]):
+    def softmax(self, outputs: np.ndarray):
         """Choices output by softmax algorithm
 
         Args:
-            outputs (List[float]): outputs list to choose from
+            outputs (np.ndarray): outputs list to choose from
 
         Returns:
             float: choosen value from outputs
         """
         sum_of_exp = sum([exp(output) for output in outputs])
-        proba = [exp(output)/sum_of_exp for output in outputs]
-        return np.random.choice(outputs, p=proba)
-        
+        probability = [exp(output)/sum_of_exp for output in outputs]
+        return np.random.choice(outputs, p=probability)
 
-    def predict(self, inputs: List[float]):
+    def predict(self, inputs: np.ndarray):
         """Generates prediction from network
 
         Args:
-            inputs (List[float]): data to predict
+            inputs (np.ndarray): data to predict
 
         Raises:
             ValueError: raise when number of inputs
@@ -155,6 +154,9 @@ class NeuralNetwork:
             raise ValueError('Invalid number of inputs')
 
         outputs = self.forward_propagate(inputs)
+        
+        # return outputs.index(max(outputs))
+        
         choice = self.softmax(outputs)
         return outputs.index(choice)
 
@@ -182,7 +184,7 @@ class NeuralNetwork:
                                         self._activation_type)
                 neuron.set_delta(delta)
 
-    def update_weights(self, row: List[list], learning_rate: float):
+    def update_weights(self, row: np.ndarray, learning_rate: float):
         """Updates weights in network
 
         Args:
