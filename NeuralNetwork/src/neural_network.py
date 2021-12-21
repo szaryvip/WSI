@@ -80,7 +80,7 @@ class NeuralNetwork:
         self._hidden_layers = self._layers[:-1]
         self._output_layer = self._layers[-1]
 
-    def estimate_time(self, epochs_done):
+    def estimate_time(self, epochs_done: int, clear: bool = False):
         if epochs_done == 0:
             time_left = '?'
         else:
@@ -90,7 +90,9 @@ class NeuralNetwork:
             time_left = str(round(epochs_left * duration_of_epoch))
             time_left += 's'
 
-        os.system('clear')
+        if clear:
+            os.system('clear')
+
         print(
             f'Epoch: {epochs_done + 1}/{self._epochs_number}'
             f' | Time left: {time_left}'
@@ -205,8 +207,6 @@ class NeuralNetwork:
                 expected[label] = 1
                 self.backward_propagate_error(expected)
                 self.update_weights(image, learning_rate)
-
-        os.system('clear')
 
     def back_propagation(
         self,
