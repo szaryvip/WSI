@@ -99,7 +99,7 @@ class NeuralNetwork:
             f' | Time left: {time_left}'
         )
 
-    def forward_propagate(self, inputs: List[float]):
+    def forward_propagate(self, inputs: np.ndarray):
         """Propagating input signal and generate outputs
         through each layer
 
@@ -124,7 +124,7 @@ class NeuralNetwork:
             inputs = outputs
         return outputs
 
-    def softmax(self, outputs: List[float]):
+    def softmax(self, outputs: np.ndarray):
         """Choices output by softmax algorithm
 
         Args:
@@ -134,11 +134,10 @@ class NeuralNetwork:
             float: choosen value from outputs
         """
         sum_of_exp = sum([exp(output) for output in outputs])
-        proba = [exp(output)/sum_of_exp for output in outputs]
-        return np.random.choice(outputs, p=proba)
-        
+        probability = [exp(output)/sum_of_exp for output in outputs]
+        return np.random.choice(outputs, p=probability)
 
-    def predict(self, inputs: List[float]):
+    def predict(self, inputs: np.ndarray):
         """Generates prediction from network
 
         Args:
@@ -155,6 +154,9 @@ class NeuralNetwork:
             raise ValueError('Invalid number of inputs')
 
         outputs = self.forward_propagate(inputs)
+        
+        # return outputs.index(max(outputs))
+        
         choice = self.softmax(outputs)
         return outputs.index(choice)
 
@@ -182,7 +184,7 @@ class NeuralNetwork:
                                         self._activation_type)
                 neuron.set_delta(delta)
 
-    def update_weights(self, row: List[list], learning_rate: float):
+    def update_weights(self, row: np.ndarray, learning_rate: float):
         """Updates weights in network
 
         Args:
