@@ -24,7 +24,8 @@ class NeuralNetwork:
         epochs_number: int = 1,
         inputs_number: int = 28 * 28,
         outputs_number: int = 10,
-        activation_type: str = 'sigmoid'
+        activation_type: str = 'sigmoid',
+        raw_output: bool = False
     ):
         """Initializes NeuralNetwork object
 
@@ -44,6 +45,7 @@ class NeuralNetwork:
         self._activation_type = activation_type
         self._epochs_number = epochs_number
         self._start_time = time.time()
+        self._raw_output = raw_output
 
         # add hidden layers
         for layer_number in range(hidden_layers_number+1):
@@ -153,12 +155,15 @@ class NeuralNetwork:
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
 
+        
         outputs = self.forward_propagate(inputs)
 
-        # return outputs.index(max(outputs))
-
-        choice = self.softmax(outputs)
-        return outputs.index(choice)
+        if self._raw_output:
+            return outputs
+        else:
+            # return outputs.index(max(outputs))
+            choice = self.softmax(outputs)
+            return outputs.index(choice)
 
     def backward_propagate_error(self, expected: int):
         """Calculates error for each output neuron
