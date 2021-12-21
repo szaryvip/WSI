@@ -3,9 +3,10 @@ from data_loader import load_data
 import numpy as np
 import os
 import random
+import time
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
-from playground import show_confusion_matrix
+# from playground import show_confusion_matrix
 
 import matplotlib.pyplot as plt
 
@@ -150,23 +151,39 @@ def plot(dict):
 
     confusion_matrix_list = []
     metrics_list = []
+    times_list = []
+
+    all_tests_start_time = time.time()
 
     for index in range(values_number):
-        os.system('clear')
+
+        # os.system('clear')
         print(f'Test: {index+1}/{values_number}')
+
+        start_time = time.time()
 
         confusion_matrix, metrics = test(
             dict['hidden_layers_number'][index],
-            dict['neurons_number'][index],
+            dict['neurons_in_layer_number'][index],
             dict['epochs_number'][index],
             dict['learning_rate'][index]
         )
 
+        times_list.append(time.time() - start_time)
         confusion_matrix_list.append(confusion_matrix)
         metrics_list.append(metrics)
 
     fig, ax1 = plt.subplots()
-    # ax2 = ax1.twinx()
+    ax2 = ax1.twinx()
+
+    if changing_parameter == 'hidden_layers_number':
+        ax1.set_xlabel('Hidden layers')
+    elif changing_parameter == 'neurons_in_layer_number':
+        ax1.set_xlabel('Neurons in layer')
+    elif changing_parameter == 'epochs number':
+        ax1.set_xlabel('Epochs')
+    elif changing_parameter == 'learning rate':
+        ax1.set_xlabel('Learning rate')
 
     for metric in metrics_list[0]:
         if metric in ('Accuracy', 'Precision'):
@@ -187,19 +204,18 @@ def plot(dict):
     ax2.plot(changing_parameter_values, times_list, color='red', marker='o')
     ax2.set_ylabel('Time', color='red')
     plt.xticks(changing_parameter_values, changing_parameter_values)
-    ax1.legend(['Accuracy', 'Precision'], title="Metrics")
 
     plt.tight_layout()
 
     plt.savefig(f'plots/{changing_parameter}.png')
     # plt.show()
 
-    print(f'All tests time: {round(time.time() - plotting_start_time)}s\n')
+    print(f'All tests time: {round(time.time() - all_tests_start_time)}s\n')
 
 
 if __name__ == "__main__":
-    # random.seed(0)
-    # np.random.seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     training_data = load_data(
         'data/train-images.idx3-ubyte',
@@ -216,28 +232,56 @@ if __name__ == "__main__":
     test_data_last_index = round(
         len(test_data) * DATA_PERCENTAGE/100
     )
-
     # print(training_data_last_index)
-
     training_data = training_data[:training_data_last_index]
     test_data = test_data[:test_data_last_index]
 
-    confusion_matrix, metrics = test(
-        hidden_layers_number=1,
-        neurons_in_layer_number=1,
-        epochs_number=5,
-        learning_rate=1
-    )
+    # print(training_data_last_index)
+    # print(test_data_last_index)
 
-    print(metrics)
+    # confusion_matrix, metrics = test(
+    #     hidden_layers_number=2,
+    #     neurons_in_layer_number=10,
+    #     epochs_number=10,
+    #     learning_rate=1
+    # )
 
-    quit()
-    # plot('epochs_number', list(range(5, 8)))
+    # # print(confusion_matrix)
+    # print(metrics)
+
+    # quit()
 
     plot(
         {
             'hidden_layers_number': 2,
-            'neurons_number': list(range(1, 5)),
+            'neurons_in_layer_number': list(range(5, 30, 5)),
+            'epochs_number': 10,
+            'learning_rate': 1
+        }
+    )
+
+    plot(
+        {
+            'hidden_layers_number': list(range(1, 5, 1)),
+            'neurons_in_layer_number': 10,
+            'epochs_number': 10,
+            'learning_rate': 1
+        }
+    )
+
+    plot(
+        {
+            'hidden_layers_number': 2,
+            'neurons_in_layer_number': 10,
+            'epochs_number': list(range(1, 20, 1)),
+            'learning_rate': 1
+        }
+    )
+
+    plot(
+        {
+            'hidden_layers_number': 2,
+            'neurons_in_layer_number': 10,
             'epochs_number': 10,
             'learning_rate': np.arange(0.5, 5.5, 0.5).tolist()
         }
