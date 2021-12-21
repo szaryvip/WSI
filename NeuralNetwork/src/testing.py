@@ -7,7 +7,7 @@ import time
 
 import matplotlib.pyplot as plt
 
-DATA_PERCENTAGE = 0.01
+DATA_PERCENTAGE = 0.02
 
 # TODO:
 # data analysis
@@ -84,12 +84,16 @@ def get_metrics(confusion_matrix: dict) -> dict:
         fn += confusion_matrix[key]['fn']
 
     metrics = {
-        'accuracy': None,
-        'precision': None
+        'Accuracy': None,
+        'Precision': None,
+        'Recall': None,
+        'F1 Score': None
     }
 
-    metrics['accuracy'] = (tp + tn) / (tp + tn + fp + fn)
-    metrics['precision'] = tp / (tp + fp)
+    metrics['Accuracy'] = (tp + tn) / (tp + tn + fp + fn)
+    metrics['Precision'] = tp / (tp + fp)
+    metrics['Recall'] = tp / (tp + fn)
+    metrics['F1 Score'] = 2*tp / (2*tp + fp + fn)
 
     # for key in confusion_matrix:
     #     print(f'{key}: {confusion_matrix[key]}')
@@ -182,35 +186,32 @@ def plot(dict):
     elif changing_parameter == 'learning rate':
         ax1.set_xlabel('Learning rate')
 
-    accuracy_list = [
-        metric['accuracy'] for metric in metrics_list
-    ]
-    ax1.plot(changing_parameter_values, accuracy_list, marker='o')
-    precision_list = [
-        metric['precision'] for metric in metrics_list
-    ]
-    ax1.plot(changing_parameter_values, precision_list, marker='o')
+    for metric in metrics_list[0]:
+        if metric in ('Accuracy', 'Precision'):
+            values = [
+                metrics[metric]
+                for metrics in metrics_list
+            ]
+            ax1.plot(changing_parameter_values, values, marker='o', label=metric)
 
     ax1.set_ylabel('Metrics')
     ax1.set_ylim((0, 1))
-    ax1.legend(['Accuracy', 'Precision'], title="Metrics")
+    ax1.legend(
+        ncol=2,
+        loc='upper center',
+        bbox_to_anchor=(0.5, 1.15)
+    )
 
     ax2.plot(changing_parameter_values, times_list, color='red', marker='o')
     ax2.set_ylabel('Time', color='red')
-    # ax2.set_ylim(
-    #     (
-    #         min(times_list) - max(times_list)*0.01,
-    #         max(times_list) + max(times_list)*0.01
-    #     )
-    # )
     plt.xticks(changing_parameter_values, changing_parameter_values)
 
-    # print(time.time() - start_time)
+    plt.tight_layout()
 
-    fig.savefig(f'plots/{changing_parameter}.png')
-    # fig.show()
+    plt.savefig(f'plots/{changing_parameter}.png')
+    # plt.show()
 
-    print(f'Plotting time: {time.time() - plotting_start_time}')
+    print(f'All tests time: {round(time.time() - plotting_start_time)}s\n')
 
 
 if __name__ == "__main__":
@@ -282,6 +283,6 @@ if __name__ == "__main__":
             'hidden_layers_number': 2,
             'neurons_in_layer_number': 10,
             'epochs_number': 10,
-            'learning_rate': np.arange(0.1, 1.1, 0.1).tolist()
+            'learning_rate': np.arange(0.5, 5.5, 0.5).tolist()
         }
     )
