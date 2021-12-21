@@ -3,12 +3,14 @@ from neural_network import NeuralNetwork
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-from sklearn.metrics import precision_score
-
+from sklearn.metrics import precision_score, confusion_matrix
 from testing import test
+import seaborn as sns
+
 
 class_names = [i for i in range(10)]
 pred = []
+
 def plot_image(i, predictions_array, true_label, img):
   true_label, img = true_label[i], img[i]
   plt.grid(False)
@@ -40,6 +42,15 @@ def plot_value_array(i, predictions_array, true_label):
   thisplot[predicted_label].set_color('red')
   thisplot[true_label].set_color('blue')
 
+def show_confusion_matrix(matrix, class_list):
+    """Shows plot with confusion matrix """
+    ax = sns.heatmap(matrix, annot=True, fmt='d')
+    ax.set_xlabel('Predicted Values')
+    ax.set_ylabel('Actual Values ')
+    ax.xaxis.set_ticklabels(class_list)
+    ax.yaxis.set_ticklabels(class_list)
+    plt.show()
+
 if __name__ == "__main__":
     testing_data = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
     testing_labels = [data[1] for data in testing_data]
@@ -68,8 +79,10 @@ if __name__ == "__main__":
 
     predictions = probability_model.predict(test_images)
     pred = [np.argmax(i) for i in predictions]
+    cm = confusion_matrix(testing_labels, pred, labels=class_names)
+    print(cm)
     print(precision_score(testing_labels, pred, labels=class_names, average='micro'))
-    
+    show_confusion_matrix(cm, class_names)
     i = 0
     plt.figure(figsize=(6,3))
     plt.subplot(1,2,1)
