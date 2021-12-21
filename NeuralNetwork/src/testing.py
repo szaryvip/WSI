@@ -3,6 +3,9 @@ from data_loader import load_data
 import numpy as np
 import os
 import random
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+from playground import show_confusion_matrix
 
 import matplotlib.pyplot as plt
 
@@ -21,6 +24,12 @@ DATA_PERCENTAGE = 10
 
 # error matrix
 # quality metrics
+
+def show_matrix(predictions: np.ndarray,
+                          expectations: np.ndarray):
+    class_list = [i for i in range(10)]
+    cm = confusion_matrix(expectations, predictions, labels=class_list)
+    show_confusion_matrix(cm, class_list)
 
 
 def create_confusion_matrix(

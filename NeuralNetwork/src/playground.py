@@ -82,7 +82,9 @@ if __name__ == "__main__":
     cm = confusion_matrix(testing_labels, pred, labels=class_names)
     print(cm)
     print(precision_score(testing_labels, pred, labels=class_names, average='micro'))
+    
     show_confusion_matrix(cm, class_names)
+    
     i = 0
     plt.figure(figsize=(6,3))
     plt.subplot(1,2,1)
