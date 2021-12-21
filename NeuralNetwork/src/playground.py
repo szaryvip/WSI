@@ -18,7 +18,7 @@ if __name__ == "__main__":
     Chad = NeuralNetwork(
         hidden_layers_number=2,
         neurons_in_layer_number=10,
-        epochs_number=10
+        epochs_number=5
     )
 
     print(

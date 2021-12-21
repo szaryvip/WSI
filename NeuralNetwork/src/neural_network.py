@@ -1,6 +1,7 @@
 import numpy as np
 from neuron import Neuron
 from layer import Layer
+from math import exp
 import random
 from typing import List
 import time
@@ -123,6 +124,20 @@ class NeuralNetwork:
             inputs = outputs
         return outputs
 
+    def softmax(self, outputs: List[float]):
+        """Choices output by softmax algorithm
+
+        Args:
+            outputs (List[float]): outputs list to choose from
+
+        Returns:
+            float: choosen value from outputs
+        """
+        sum_of_exp = sum([exp(output) for output in outputs])
+        proba = [exp(output)/sum_of_exp for output in outputs]
+        return np.random.choice(outputs, p=proba)
+        
+
     def predict(self, inputs: List[float]):
         """Generates prediction from network
 
@@ -140,7 +155,8 @@ class NeuralNetwork:
             raise ValueError('Invalid number of inputs')
 
         outputs = self.forward_propagate(inputs)
-        return outputs.index(max(outputs))
+        choice = self.softmax(outputs)
+        return outputs.index(choice)
 
     def backward_propagate_error(self, expected: int):
         """Calculates error for each output neuron
