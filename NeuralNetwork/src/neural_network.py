@@ -65,7 +65,8 @@ class NeuralNetwork:
 
             for neuron in range(neurons_in_layer_number):
                 weights = [
-                    random.uniform(-1, 1)
+                    # random.uniform(-1, 1)
+                    0
                     for weight in range(weights_number)
                 ]
 

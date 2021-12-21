@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from sklearn.metrics import precision_score
-
-from testing import test
+from testing import show_matrix
+# from testing import test
 
 class_names = [i for i in range(10)]
 pred = []
@@ -41,15 +41,14 @@ def plot_value_array(i, predictions_array, true_label):
   thisplot[true_label].set_color('blue')
 
 if __name__ == "__main__":
-    testing_data = load_data('data/t10k-images.idx3-ubyte', 'data/t10k-labels.idx1-ubyte')
-    testing_labels = [data[1] for data in testing_data]
     mnist = tf.keras.datasets.mnist
 
     (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
     
     model = tf.keras.Sequential([
         tf.keras.layers.Flatten(input_shape=(28,28)),
-        tf.keras.layers.Dense(10, activation='sigmoid'),
+        tf.keras.layers.Dense(15, activation='sigmoid'),
+        tf.keras.layers.Dense(15, activation='sigmoid'),
         tf.keras.layers.Dense(10)  
     ])
 
@@ -68,8 +67,8 @@ if __name__ == "__main__":
 
     predictions = probability_model.predict(test_images)
     pred = [np.argmax(i) for i in predictions]
-    print(precision_score(testing_labels, pred, labels=class_names, average='micro'))
-    
+    print("Prec: ", precision_score(test_labels, pred, labels=class_names, average='micro'))
+    show_matrix(pred, test_labels)
     i = 0
     plt.figure(figsize=(6,3))
     plt.subplot(1,2,1)

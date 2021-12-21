@@ -6,7 +6,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-DATA_PERCENTAGE = 1
+DATA_PERCENTAGE = 10
 
 class_names = [i for i in range(10)]
 
@@ -39,7 +39,7 @@ def show_example(
     training_data,
     test_data,
     hidden_layers_number=2,
-    neurons_in_layer_number=10,
+    neurons_in_layer_number=15,
     epochs_number=10,
     learning_rate=0.1
 ):

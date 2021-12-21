@@ -6,7 +6,7 @@ import random
 import time
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
-# from playground import show_confusion_matrix
+
 
 import matplotlib.pyplot as plt
 
@@ -25,6 +25,15 @@ DATA_PERCENTAGE = 10
 
 # error matrix
 # quality metrics
+
+def show_confusion_matrix(matrix, class_list):
+    """Shows plot with confusion matrix """
+    ax = sns.heatmap(matrix, annot=True, fmt="d")
+    ax.set_xlabel('Predicted Values')
+    ax.set_ylabel('Actual Values ')
+    ax.xaxis.set_ticklabels(class_list)
+    ax.yaxis.set_ticklabels(class_list)
+    plt.show()
 
 def show_matrix(predictions: np.ndarray,
                           expectations: np.ndarray):
@@ -124,7 +133,7 @@ def test(
     )
 
     expectations = [row[1] for row in test_data]
-
+    show_matrix(predictions, expectations)
     confusion_matrix = create_confusion_matrix(predictions, expectations)
     metrics = get_metrics(confusion_matrix)
 
@@ -281,12 +290,16 @@ if __name__ == "__main__":
     # )
     # biore 10
     
-    plot(
-        {
-            'hidden_layers_number': 2,
-            'neurons_in_layer_number': 15,
-            'epochs_number': 10,
-            'learning_rate': np.arange(0.01, 0.52, 0.1).tolist()
-        }
-    )
-    # biore 
+    # plot(
+    #     {
+    #         'hidden_layers_number': 2,
+    #         'neurons_in_layer_number': 15,
+    #         'epochs_number': 10,
+    #         'learning_rate': np.arange(0.01, 0.52, 0.1).tolist()
+    #     }
+    # )
+    # biore 0.1
+    
+    cn, metrics = test(2, 15, 10, 0.1)
+    print("ACC: ", metrics["Accuracy"])
+    print("Prec: ", metrics["Precision"])
