@@ -104,14 +104,14 @@ class NeuralNetwork:
         through each layer
 
         Args:
-            inputs (List[float]): data
+            inputs (np.ndarray): data
 
         Raises:
             ValueError: raise when number of inputs is
                         not correct
 
         Returns:
-            List[float]: output of output layer
+            np.ndarray: output of output layer
         """
         if len(inputs) != self._inputs_number:
             raise ValueError('Invalid number of inputs')
@@ -128,7 +128,7 @@ class NeuralNetwork:
         """Choices output by softmax algorithm
 
         Args:
-            outputs (List[float]): outputs list to choose from
+            outputs (np.ndarray): outputs list to choose from
 
         Returns:
             float: choosen value from outputs
@@ -141,7 +141,7 @@ class NeuralNetwork:
         """Generates prediction from network
 
         Args:
-            inputs (List[float]): data to predict
+            inputs (np.ndarray): data to predict
 
         Raises:
             ValueError: raise when number of inputs
