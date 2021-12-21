@@ -67,8 +67,9 @@ if __name__ == "__main__":
                                             tf.keras.layers.Softmax()])
 
     predictions = probability_model.predict(test_images)
-    # print(precision_score(testing_labels, pred, labels=class_names, average='micro'))
-      
+    pred = [np.argmax(i) for i in predictions]
+    print(precision_score(testing_labels, pred, labels=class_names, average='micro'))
+    
     i = 0
     plt.figure(figsize=(6,3))
     plt.subplot(1,2,1)
