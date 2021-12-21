@@ -29,7 +29,7 @@ class Neuron:
 
         Args:
             weight (float): weight to set
-            index (int): which weight it is 
+            index (int): which weight it is
         """
         self._weights[index] = weight
 
@@ -67,7 +67,7 @@ class Neuron:
 
     def activate(self, inputs: list):
         """Calculates activation of neuron
-        given input 
+        given input
 
         Args:
             inputs (list): data
@@ -93,7 +93,8 @@ class Neuron:
 
         Args:
             activation (float): calculated activation
-            activation_function (str, optional): Function type. Defaults to 'sigmoid'.
+            activation_function (str, optional): Function type.
+            Defaults to 'sigmoid'.
 
         Returns:
             float: output of neuron

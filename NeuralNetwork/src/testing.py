@@ -1,12 +1,13 @@
 from neural_network import NeuralNetwork
 from data_loader import load_data
 import numpy as np
-import os
+# import os
 import random
+import time
 
 import matplotlib.pyplot as plt
 
-DATA_PERCENTAGE = 10
+DATA_PERCENTAGE = 0.01
 
 # TODO:
 # data analysis
@@ -48,6 +49,8 @@ def create_confusion_matrix(
             elif expectation == digit and predicition != digit:
                 confusion_matrix[digit]['fn'] += 1
 
+    # print(f'Predictions number: {len(predictions)}')
+
     '''
     --------------------------------------------------------
     different approach, not sure if correct, want to test later
@@ -88,6 +91,15 @@ def get_metrics(confusion_matrix: dict) -> dict:
     metrics['accuracy'] = (tp + tn) / (tp + tn + fp + fn)
     metrics['precision'] = tp / (tp + fp)
 
+    # for key in confusion_matrix:
+    #     print(f'{key}: {confusion_matrix[key]}')
+    # for key in confusion_matrix:
+    #     print(f'{key}: {confusion_matrix[key]}')
+    # print(tp)
+    # print(tn)
+    # print(fp)
+    # print(fn)
+
     return metrics
 
 
@@ -123,6 +135,8 @@ def test(
 
 
 def plot(dict):
+    plotting_start_time = time.time()
+
     for key in dict:
         if isinstance(dict[key], list):
             changing_parameter = key
@@ -137,52 +151,71 @@ def plot(dict):
 
     confusion_matrix_list = []
     metrics_list = []
+    times_list = []
 
     for index in range(values_number):
-        os.system('clear')
+        # os.system('clear')
         print(f'Test: {index+1}/{values_number}')
 
+        start_time = time.time()
         confusion_matrix, metrics = test(
             dict['hidden_layers_number'][index],
-            dict['neurons_number'][index],
+            dict['neurons_in_layer_number'][index],
             dict['epochs_number'][index],
             dict['learning_rate'][index]
         )
+
+        times_list.append(time.time() - start_time)
 
         confusion_matrix_list.append(confusion_matrix)
         metrics_list.append(metrics)
 
     fig, ax1 = plt.subplots()
-    # ax2 = ax1.twinx()
+    ax2 = ax1.twinx()
+
+    if changing_parameter == 'hidden_layers_number':
+        ax1.set_xlabel('Hidden layers')
+    elif changing_parameter == 'neurons_in_layer_number':
+        ax1.set_xlabel('Neurons in layer')
+    elif changing_parameter == 'epochs number':
+        ax1.set_xlabel('Epochs')
+    elif changing_parameter == 'learning rate':
+        ax1.set_xlabel('Learning rate')
 
     accuracy_list = [
         metric['accuracy'] for metric in metrics_list
     ]
-    ax1.plot(changing_parameter_values, accuracy_list)
-
+    ax1.plot(changing_parameter_values, accuracy_list, marker='o')
     precision_list = [
         metric['precision'] for metric in metrics_list
     ]
-    ax1.plot(changing_parameter_values, precision_list)
+    ax1.plot(changing_parameter_values, precision_list, marker='o')
 
-
-    ax1.set_xlabel(changing_parameter)
-    # ax1.set_ylabel('Accuracy', color='green')
-    # ax2.set_ylabel('F1 Score', color='blue')
+    ax1.set_ylabel('Metrics')
     ax1.set_ylim((0, 1))
-    # ax2.set_ylim((0.5, 1.0))
-    plt.xticks(changing_parameter_values, changing_parameter_values)
     ax1.legend(['Accuracy', 'Precision'], title="Metrics")
+
+    ax2.plot(changing_parameter_values, times_list, color='red', marker='o')
+    ax2.set_ylabel('Time', color='red')
+    # ax2.set_ylim(
+    #     (
+    #         min(times_list) - max(times_list)*0.01,
+    #         max(times_list) + max(times_list)*0.01
+    #     )
+    # )
+    plt.xticks(changing_parameter_values, changing_parameter_values)
 
     # print(time.time() - start_time)
 
-    # plt.savefig('images/chart.png')
-    plt.show()
+    fig.savefig(f'plots/{changing_parameter}.png')
+    # fig.show()
+
+    print(f'Plotting time: {time.time() - plotting_start_time}')
 
 
 if __name__ == "__main__":
-    # random.seed(0)
-    # np.random.seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     training_data = load_data(
         'data/train-images.idx3-ubyte',
@@ -199,29 +232,56 @@ if __name__ == "__main__":
     test_data_last_index = round(
         len(test_data) * DATA_PERCENTAGE/100
     )
-
-    # print(training_data_last_index)
-
     training_data = training_data[:training_data_last_index]
     test_data = test_data[:test_data_last_index]
 
-    confusion_matrix, metrics = test(
-        hidden_layers_number=1,
-        neurons_in_layer_number=1,
-        epochs_number=5,
-        learning_rate=1
-    )
+    # print(training_data_last_index)
+    # print(test_data_last_index)
 
-    print(metrics)
+    # confusion_matrix, metrics = test(
+    #     hidden_layers_number=2,
+    #     neurons_in_layer_number=10,
+    #     epochs_number=10,
+    #     learning_rate=1
+    # )
 
-    quit()
-    # plot('epochs_number', list(range(5, 8)))
+    # # print(confusion_matrix)
+    # print(metrics)
+
+    # quit()
 
     plot(
         {
             'hidden_layers_number': 2,
-            'neurons_number': list(range(1, 5)),
+            'neurons_in_layer_number': list(range(5, 30, 5)),
             'epochs_number': 10,
             'learning_rate': 1
+        }
+    )
+
+    plot(
+        {
+            'hidden_layers_number': list(range(1, 5, 1)),
+            'neurons_in_layer_number': 10,
+            'epochs_number': 10,
+            'learning_rate': 1
+        }
+    )
+
+    plot(
+        {
+            'hidden_layers_number': 2,
+            'neurons_in_layer_number': 10,
+            'epochs_number': list(range(1, 20, 1)),
+            'learning_rate': 1
+        }
+    )
+
+    plot(
+        {
+            'hidden_layers_number': 2,
+            'neurons_in_layer_number': 10,
+            'epochs_number': 10,
+            'learning_rate': np.arange(0.1, 1.1, 0.1).tolist()
         }
     )

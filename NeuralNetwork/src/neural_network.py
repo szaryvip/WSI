@@ -3,7 +3,7 @@ from neuron import Neuron
 from layer import Layer
 from math import exp
 import random
-from typing import List
+# from typing import List
 import time
 import os
 
@@ -154,9 +154,9 @@ class NeuralNetwork:
             raise ValueError('Invalid number of inputs')
 
         outputs = self.forward_propagate(inputs)
-        
+
         # return outputs.index(max(outputs))
-        
+
         choice = self.softmax(outputs)
         return outputs.index(choice)
 
