@@ -10,7 +10,7 @@ import seaborn as sns
 
 import matplotlib.pyplot as plt
 
-DATA_PERCENTAGE = 0.02
+DATA_PERCENTAGE = 10
 
 # TODO:
 # data analysis
@@ -140,7 +140,7 @@ def plot(dict):
     for key in dict:
         if isinstance(dict[key], list):
             changing_parameter = key
-            changing_parameter_values = dict[key]
+            changing_parameter_values = [round(i, 2) for i in dict[key]]
             values_number = len(dict[key])
     for key in dict:
         if key != changing_parameter:
@@ -180,9 +180,9 @@ def plot(dict):
         ax1.set_xlabel('Hidden layers')
     elif changing_parameter == 'neurons_in_layer_number':
         ax1.set_xlabel('Neurons in layer')
-    elif changing_parameter == 'epochs number':
+    elif changing_parameter == 'epochs_number':
         ax1.set_xlabel('Epochs')
-    elif changing_parameter == 'learning rate':
+    elif changing_parameter == 'learning_rate':
         ax1.set_xlabel('Learning rate')
 
     for metric in metrics_list[0]:
@@ -251,38 +251,42 @@ if __name__ == "__main__":
 
     # quit()
 
+    # plot(
+    #     {
+    #         'hidden_layers_number': 2,
+    #         'neurons_in_layer_number': list(range(5,30,5)),
+    #         'epochs_number': 10,
+    #         'learning_rate': 0.1
+    #     }
+    # )
+    # biore 15
+    
+    # plot(
+    #     {
+    #         'hidden_layers_number': list(range(1, 6, 1)),
+    #         'neurons_in_layer_number': 15,
+    #         'epochs_number': 10,
+    #         'learning_rate': 0.1
+    #     }
+    # )
+    # biore 2
+    
+    # plot(
+    #     {
+    #         'hidden_layers_number': 2,
+    #         'neurons_in_layer_number': 15,
+    #         'epochs_number': list(range(1, 51, 5)),
+    #         'learning_rate': 0.1
+    #     }
+    # )
+    # biore 10
+    
     plot(
         {
             'hidden_layers_number': 2,
-            'neurons_in_layer_number': list(range(5, 30, 5)),
+            'neurons_in_layer_number': 15,
             'epochs_number': 10,
-            'learning_rate': 1
+            'learning_rate': np.arange(0.01, 0.52, 0.1).tolist()
         }
     )
-
-    plot(
-        {
-            'hidden_layers_number': list(range(1, 5, 1)),
-            'neurons_in_layer_number': 10,
-            'epochs_number': 10,
-            'learning_rate': 1
-        }
-    )
-
-    plot(
-        {
-            'hidden_layers_number': 2,
-            'neurons_in_layer_number': 10,
-            'epochs_number': list(range(1, 20, 1)),
-            'learning_rate': 1
-        }
-    )
-
-    plot(
-        {
-            'hidden_layers_number': 2,
-            'neurons_in_layer_number': 10,
-            'epochs_number': 10,
-            'learning_rate': np.arange(0.5, 5.5, 0.5).tolist()
-        }
-    )
+    # biore 
