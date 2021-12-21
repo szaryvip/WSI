@@ -1,20 +1,24 @@
 from neural_network import NeuralNetwork
 from data_loader import load_data
 import numpy as np
+import os
 import random
 
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
-DATA_PERCENTAGE = 1
+DATA_PERCENTAGE = 10
 
 # TODO:
 # data analysis
+
 # neurons number
-# lauers number
+# layers number
 # learning rate
 # epochs
+
 # example network
 # example classifications
+
 # error matrix
 # quality metrics
 
@@ -108,18 +112,77 @@ def test(
     expectations = [row[1] for row in test_data]
 
     confusion_matrix = create_confusion_matrix(predictions, expectations)
+    metrics = get_metrics(confusion_matrix)
 
     # print(confusion_matrix)
-    print(
-        get_metrics(confusion_matrix)
-    )
+    # print(metrics)
     # print(predictions)
     # print(expectations)
 
+    return confusion_matrix, metrics
+
+
+def plot(dict):
+    for key in dict:
+        if isinstance(dict[key], list):
+            changing_parameter = key
+            changing_parameter_values = dict[key]
+            values_number = len(dict[key])
+    for key in dict:
+        if key != changing_parameter:
+            dict[key] = [
+                dict[key]
+                for _ in range(values_number)
+            ]
+
+    confusion_matrix_list = []
+    metrics_list = []
+
+    for index in range(values_number):
+        os.system('clear')
+        print(f'Test: {index+1}/{values_number}')
+
+        confusion_matrix, metrics = test(
+            dict['hidden_layers_number'][index],
+            dict['neurons_number'][index],
+            dict['epochs_number'][index],
+            dict['learning_rate'][index]
+        )
+
+        confusion_matrix_list.append(confusion_matrix)
+        metrics_list.append(metrics)
+
+    fig, ax1 = plt.subplots()
+    # ax2 = ax1.twinx()
+
+    accuracy_list = [
+        metric['accuracy'] for metric in metrics_list
+    ]
+    ax1.plot(changing_parameter_values, accuracy_list)
+
+    precision_list = [
+        metric['precision'] for metric in metrics_list
+    ]
+    ax1.plot(changing_parameter_values, precision_list)
+
+
+    ax1.set_xlabel(changing_parameter)
+    # ax1.set_ylabel('Accuracy', color='green')
+    # ax2.set_ylabel('F1 Score', color='blue')
+    ax1.set_ylim((0, 1))
+    # ax2.set_ylim((0.5, 1.0))
+    plt.xticks(changing_parameter_values, changing_parameter_values)
+    ax1.legend(['Accuracy', 'Precision'], title="Metrics")
+
+    # print(time.time() - start_time)
+
+    # plt.savefig('images/chart.png')
+    plt.show()
+
 
 if __name__ == "__main__":
-    random.seed(1)
-    np.random.seed(1)
+    # random.seed(0)
+    # np.random.seed(0)
 
     training_data = load_data(
         'data/train-images.idx3-ubyte',
@@ -142,9 +205,23 @@ if __name__ == "__main__":
     training_data = training_data[:training_data_last_index]
     test_data = test_data[:test_data_last_index]
 
-    test(
-        hidden_layers_number=2,
-        neurons_in_layer_number=10,
-        epochs_number=10,
+    confusion_matrix, metrics = test(
+        hidden_layers_number=1,
+        neurons_in_layer_number=1,
+        epochs_number=5,
         learning_rate=1
+    )
+
+    print(metrics)
+
+    quit()
+    # plot('epochs_number', list(range(5, 8)))
+
+    plot(
+        {
+            'hidden_layers_number': 2,
+            'neurons_number': list(range(1, 5)),
+            'epochs_number': 10,
+            'learning_rate': 1
+        }
     )
