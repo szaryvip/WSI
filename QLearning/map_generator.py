@@ -11,15 +11,17 @@ def generate_map(
 ) -> np.ndarray:
     board = np.zeros([height, width])
     board[start_point[1], start_point[0]] = 1
-    can_x = [x for x in range(width) if x != start_point[0]]
-    can_y = [y for y in range(height) if y != start_point[1]]
-    end_x = random.choice(can_x)
-    end_y = random.choice(can_y)
+    correct_end = False
+    while not correct_end:
+        end_x = random.choice(range(width))
+        end_y = random.choice(range(height))
+        if board[end_y, end_x] != 1:
+            correct_end = True
     board[end_y, end_x] = 2
-    for y in can_y:
-        for x in can_x:
+    for y in range(height):
+        for x in range(width):
             if np.random.rand() < hole_prob \
-               and board[y, x] != 2:
+               and board[y, x] != 2 and board[y, x] != 1:
                 board[y, x] = -1
     return board
 
