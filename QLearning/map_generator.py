@@ -1,13 +1,13 @@
 import random
 import numpy as np
-from time import sleep
 from typing import Tuple, List
+
 
 def generate_map(
     start_point: Tuple[int, int],
     hole_prob: float,
-    width: int =8,
-    height: int =8
+    width: int = 8,
+    height: int = 8
 ) -> np.ndarray:
     board = np.zeros([height, width])
     board[start_point[1], start_point[0]] = 1
@@ -28,16 +28,16 @@ def add_next_moves(point: Tuple[int, int],
                    visited: np.ndarray) -> List:
     moves = []
     if point[0]-1 >= 0:
-        if visited[point[1],point[0]-1] == 0:
+        if visited[point[1], point[0]-1] == 0:
             moves.append((point[0]-1, point[1]))
-    if point[0]+1 < len(visited[0]):        
-        if visited[point[1],point[0]+1] == 0:
+    if point[0]+1 < len(visited[0]):
+        if visited[point[1], point[0]+1] == 0:
             moves.append((point[0]+1, point[1]))
-    if point[1]-1 >= 0:        
-        if visited[point[1]-1,point[0]] == 0:
+    if point[1]-1 >= 0:
+        if visited[point[1]-1, point[0]] == 0:
             moves.append((point[0], point[1]-1))
-    if point[1]+1 < len(visited):        
-        if visited[point[1]+1,point[0]] == 0:
+    if point[1]+1 < len(visited):
+        if visited[point[1]+1, point[0]] == 0:
             moves.append((point[0], point[1]+1))
     return moves
 
@@ -73,8 +73,8 @@ def is_correct(
 def prepare_correct_map(
     start_point: Tuple[int, int],
     hole_prob: float,
-    width: int =8,
-    height: int =8
+    width: int = 8,
+    height: int = 8
 ) -> np.ndarray:
     now_map = generate_map(start_point,
                            hole_prob, width, height)
@@ -85,4 +85,4 @@ def prepare_correct_map(
 
 
 if __name__ == "__main__":
-    print(prepare_correct_map((1,1), 0.3))
+    print(prepare_correct_map((1, 1), 0.3))

@@ -1,5 +1,5 @@
-# „Q-Uber” 
-# Elon Piżmo konstruuje autonomiczne samochody do swojego 
+# „Q-Uber”
+# Elon Piżmo konstruuje autonomiczne samochody do swojego
 # najnowszego biznesu. Dysponujemy planszą NxN (domyślnie N=8)
 # reprezentującą pole do testów jazdy. Na planszy jako
 # przeszkody stoją jego bezpłatni stażyści (reprezentują
@@ -52,5 +52,3 @@
 # - sugerowałbym użyć dodatkowego kryterium stopu jak np.
 # limit nagród czy maksymalna liczba kroków, zwłaszcza
 # jeśli Państwa nagrody nie są ujemne tylko zerowe
-
-
