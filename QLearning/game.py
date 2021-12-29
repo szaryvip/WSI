@@ -29,6 +29,7 @@ def game(start_point: Tuple[int, int], hole_proba: float,
         if q_uber.is_winner():
             print("Agent Q Uber dotarł do mety")
             end = True
+            continue
         if q_uber.in_hole():
             print("Agent Q Uber trafił w stażystę!")
             q_uber.back_to(start_point)
