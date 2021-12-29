@@ -1,7 +1,7 @@
 import pygame
-from time import sleep
 from map_generator import prepare_correct_map
 import numpy as np
+from typing import Tuple
 
 FRAME_COLOR = (0, 0, 255)
 HOLE_COLOR = (255, 0, 0)
@@ -38,10 +38,11 @@ def draw_board(screen: pygame.display, mymap: np.ndarray):
                                              FRAME_SIZE-2, FRAME_SIZE-2))
 
 
-def clear_position(screen: pygame.display, x: int, y: int):
-    pygame.draw.rect(screen, (0, 0, 0),
+def clear_position(screen: pygame.display, x: int, y: int,
+                   color: Tuple[int, int, int]):
+    pygame.draw.rect(screen, color,
                      pygame.Rect(x*FRAME_SIZE+1, y*FRAME_SIZE+1,
-                     FRAME_SIZE-2, FRAME_SIZE-2))
+                                 FRAME_SIZE-2, FRAME_SIZE-2))
     return
 
 

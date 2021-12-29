@@ -1,7 +1,7 @@
 import pygame
 from typing import Tuple
 import numpy as np
-from draw_board import clear_position, draw_image
+from draw_board import HOLE_COLOR, clear_position, draw_image
 
 
 class Agent:
@@ -24,21 +24,13 @@ class Agent:
     def possible_moves(self):
         moves = []
         if self._position[0]-1 >= 0:
-            move = (self._position[0]-1, self._position[1])
-            if self._map[move[1], move[0]] != -1:
-                moves.append("left")
+            moves.append("left")
         if self._position[1]-1 >= 0:
-            move = (self._position[0], self._position[1]-1)
-            if self._map[move[1], move[0]] != -1:
-                moves.append("up")
+            moves.append("up")
         if self._position[0]+1 < len(self._map[0]):
-            move = (self._position[0]+1, self._position[1])
-            if self._map[move[1], move[0]] != -1:
-                moves.append("right")
+            moves.append("right")
         if self._position[1]+1 < len(self._map):
-            move = (self._position[0], self._position[1]+1)
-            if self._map[move[1], move[0]] != -1:
-                moves.append("down")
+            moves.append("down")
         return moves
 
     def move(self):
@@ -53,7 +45,8 @@ class Agent:
                 new_position = (self._position[0]+1, self._position[1])
             elif direction == "down":
                 new_position = (self._position[0], self._position[1]+1)
-            clear_position(self._scene, self._position[0], self._position[1])
+            clear_position(self._scene, self._position[0],
+                           self._position[1], (0, 0, 0))
             draw_image(self._scene, "img/nissan.jpeg",
                        new_position[0], new_position[1])
             self._position = new_position
@@ -64,3 +57,18 @@ class Agent:
         if self._map[self._position[1], self._position[0]] == 2:
             return True
         return False
+
+    def in_hole(self):
+        if self._map[self._position[1], self._position[0]] == -1:
+            return True
+        return False
+
+    def back_to(self, new_point: Tuple[int, int]):
+        clear_position(self._scene, self._position[0],
+                       self._position[1], HOLE_COLOR)
+        self._position = new_point
+        if self._mode == "random":
+            draw_image(self._scene, "img/nissan.jpeg",
+                       self._position[0], self._position[1])
+        else:
+            pass
