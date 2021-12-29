@@ -29,8 +29,6 @@ def draw_board(screen: pygame.display, mymap: np.ndarray):
         for x in range(len(mymap[0])):
             if mymap[y, x] == 1:
                 draw_image(screen, 'img/nissan.jpeg', x, y)
-                pygame.display.flip()
-                sleep(1)
                 draw_image(screen, 'img/mustang.jpeg', x, y)
             if mymap[y, x] == 2:
                 draw_image(screen, 'img/finish_flag.jpg', x, y)
@@ -38,6 +36,13 @@ def draw_board(screen: pygame.display, mymap: np.ndarray):
                 pygame.draw.rect(screen, HOLE_COLOR,
                                  pygame.Rect(x*FRAME_SIZE+1, y*FRAME_SIZE+1,
                                              FRAME_SIZE-2, FRAME_SIZE-2))
+
+
+def clear_position(screen: pygame.display, x: int, y: int):
+    pygame.draw.rect(screen, (0, 0, 0),
+                     pygame.Rect(x*FRAME_SIZE+1, y*FRAME_SIZE+1,
+                     FRAME_SIZE-2, FRAME_SIZE-2))
+    return
 
 
 if __name__ == "__main__":

@@ -38,12 +38,6 @@
 # Na pewno kluczowe będzie pokazanie, że agent nauczył się
 # najkrótszej trasy do celu.
 
-# - generacja planszy powinna być wykonywana do skutku.
-# - co do wartości startu i początku najlepiej jest je
-# przekazać jako parametry waszego rozwiązania
-# - dziury na planszy lepiej jest zdefiniować jako
-# prawdopodobieństwo ich wystąpienia (tzn. współczynnik)
-# niż wartość bezwzględną.
 # - porażki agenta losowego nie powinny wpływać
 # na proces nauki drugiego agenta. Innymi słowy jeśli
 # Random-car trafi na stażystę to Q-uber nie powinien
