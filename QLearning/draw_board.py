@@ -20,6 +20,8 @@ def draw_image(screen: pygame.display,
                path: str, x: int, y: int):
     image = pygame.image.load(path)
     image = pygame.transform.scale(image, (FRAME_SIZE-2, FRAME_SIZE-2))
+    if "nissan" in path:
+        image.set_alpha(100)
     screen.blit(image, (x*FRAME_SIZE+1, y*FRAME_SIZE+1))
 
 
@@ -30,9 +32,9 @@ def draw_board(screen: pygame.display, mymap: np.ndarray):
             if mymap[y, x] == 1:
                 draw_image(screen, 'img/nissan.jpeg', x, y)
                 draw_image(screen, 'img/mustang.jpeg', x, y)
-            if mymap[y, x] == 2:
+            if mymap[y, x] == 200:
                 draw_image(screen, 'img/finish_flag.jpg', x, y)
-            if mymap[y, x] == -1:
+            if mymap[y, x] == -1000:
                 pygame.draw.rect(screen, HOLE_COLOR,
                                  pygame.Rect(x*FRAME_SIZE+1, y*FRAME_SIZE+1,
                                              FRAME_SIZE-2, FRAME_SIZE-2))

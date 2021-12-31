@@ -9,7 +9,7 @@ def generate_map(
     width: int = 8,
     height: int = 8
 ) -> np.ndarray:
-    board = np.zeros([height, width])
+    board = np.full([height, width], -1)
     board[start_point[1], start_point[0]] = 1
     correct_end = False
     while not correct_end:
@@ -17,12 +17,12 @@ def generate_map(
         end_y = random.choice(range(height))
         if board[end_y, end_x] != 1:
             correct_end = True
-    board[end_y, end_x] = 2
+    board[end_y, end_x] = 200
     for y in range(height):
         for x in range(width):
             if np.random.rand() < hole_prob \
-               and board[y, x] != 2 and board[y, x] != 1:
-                board[y, x] = -1
+               and board[y, x] != 200 and board[y, x] != 1:
+                board[y, x] = -1000
     return board
 
 
@@ -58,9 +58,9 @@ def is_correct(
             continue
         else:
             tiles_visited[point[1], point[0]] = 1
-        if mymap[point[1], point[0]] == 2:
+        if mymap[point[1], point[0]] == 200:
             return True
-        elif mymap[point[1], point[0]] == -1:
+        elif mymap[point[1], point[0]] == -1000:
             to_check.remove(point)
             continue
         else:
