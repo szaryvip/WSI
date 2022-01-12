@@ -25,11 +25,12 @@ def draw_image(screen: pygame.display,
     screen.blit(image, (x*FRAME_SIZE+1, y*FRAME_SIZE+1))
 
 
-def draw_board(screen: pygame.display, mymap: np.ndarray):
+def draw_board(screen: pygame.display, mymap: np.ndarray,
+               start_point: Tuple[int, int]):
     draw_frames(screen, mymap)
     for y in range(len(mymap)):
         for x in range(len(mymap[0])):
-            if mymap[y, x] == 1:
+            if (x, y) == start_point:
                 draw_image(screen, 'img/nissan.jpeg', x, y)
                 draw_image(screen, 'img/mustang.jpeg', x, y)
             if mymap[y, x] == 200:
@@ -50,11 +51,11 @@ def clear_position(screen: pygame.display, x: int, y: int,
 
 if __name__ == "__main__":
     pygame.init()
-    mymap = prepare_correct_map((1, 1), 0.4)
+    mymap = prepare_correct_map((1, 1), 0.9)
     size = max(len(mymap), len(mymap[0]))
     screen = pygame.display.set_mode([size*FRAME_SIZE,
                                       size*FRAME_SIZE])
-    draw_board(screen, mymap)
+    draw_board(screen, mymap, (1, 1))
     running = True
     while running:
         for event in pygame.event.get():

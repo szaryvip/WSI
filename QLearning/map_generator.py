@@ -1,4 +1,3 @@
-import random
 import numpy as np
 from typing import Tuple, List
 
@@ -10,19 +9,24 @@ def generate_map(
     height: int = 8
 ) -> np.ndarray:
     board = np.full([height, width], -1)
-    board[start_point[1], start_point[0]] = 1
     correct_end = False
     while not correct_end:
-        end_x = random.choice(range(width))
-        end_y = random.choice(range(height))
-        if board[end_y, end_x] != 1:
+        end_x = np.random.choice(range(1, width-1))
+        end_y = np.random.choice(range(1, height-1))
+        if (end_y, end_x) != start_point:
             correct_end = True
     board[end_y, end_x] = 200
     for y in range(height):
         for x in range(width):
             if np.random.rand() < hole_prob \
-               and board[y, x] != 200 and board[y, x] != 1:
+               and board[y, x] != 200 and (x, y) != start_point:
                 board[y, x] = -1000
+    for y in range(height):
+        board[y, 0] = -1000
+        board[y, width-1] = -1000
+    for x in range(width):
+        board[0, x] = -1000
+        board[height-1, x] = -1000
     return board
 
 
@@ -49,7 +53,7 @@ def is_correct(
     start_point: Tuple[int, int]
 ) -> bool:
     tiles_visited = np.zeros([len(mymap), len(mymap[0])])
-    tiles_visited[start_point[1], start_point[0]] = 1
+    # tiles_visited[start_point[1], start_point[0]] = 1
     to_check = add_next_moves(start_point, tiles_visited)
     while len(to_check) != 0:
         point = to_check[0]
@@ -78,6 +82,8 @@ def prepare_correct_map(
     width: int = 8,
     height: int = 8
 ) -> np.ndarray:
+    width += 2
+    height += 2
     now_map = generate_map(start_point,
                            hole_prob, width, height)
     while not is_correct(now_map, start_point):
@@ -87,4 +93,4 @@ def prepare_correct_map(
 
 
 if __name__ == "__main__":
-    print(prepare_correct_map((1, 1), 0.3))
+    print(prepare_correct_map((1, 1), 0.3, 8, 8))
