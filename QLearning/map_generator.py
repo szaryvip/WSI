@@ -1,5 +1,7 @@
 import numpy as np
 from typing import Tuple, List
+import random
+# random.seed(1234)
 
 
 def generate_map(
@@ -11,14 +13,14 @@ def generate_map(
     board = np.full([height, width], -1)
     correct_end = False
     while not correct_end:
-        end_x = np.random.choice(range(1, width-1))
-        end_y = np.random.choice(range(1, height-1))
+        end_x = random.choice(range(1, width-1))
+        end_y = random.choice(range(1, height-1))
         if (end_y, end_x) != start_point:
             correct_end = True
     board[end_y, end_x] = 200
     for y in range(height):
         for x in range(width):
-            if np.random.rand() < hole_prob \
+            if random.uniform(0, 1) < hole_prob \
                and board[y, x] != 200 and (x, y) != start_point:
                 board[y, x] = -1000
     for y in range(height):

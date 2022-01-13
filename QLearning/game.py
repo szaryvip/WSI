@@ -2,7 +2,7 @@ import pygame
 from draw_board import FRAME_SIZE, draw_board, clear_position, draw_image
 from agent import Agent
 from map_generator import prepare_correct_map
-from typing import Tuple
+from typing import Tuple, runtime_checkable
 import numpy as np
 from time import sleep
 
@@ -19,7 +19,8 @@ class Game:
 
     def __init__(self, start_point: Tuple[int, int], hole_proba: int,
                  max_iter: int, discount: float = 1.0, learn_rate: float = 0.8,
-                 epsilon: float = 0.9, width: int = 8, height: int = 8):
+                 epsilon: float = 0.9, width: int = 8, height: int = 8,
+                 show=False):
         self._discount = discount
         self._learning_rate = learn_rate
         self._iterations = max_iter
@@ -41,8 +42,9 @@ class Game:
         #                         [-1000, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1000],
         #                         [-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000]])
         size = max(width+2, height+2)
-        self._screen = pygame.display.set_mode([size*FRAME_SIZE,
-                                                size*FRAME_SIZE])
+        if show:
+            self._screen = pygame.display.set_mode([size*FRAME_SIZE,
+                                                    size*FRAME_SIZE])
         self._q_uber = Agent(start_point, 'qlearning', self._my_map,
                              discount, learn_rate, epsilon)
         self._random = Agent(start_point, 'random', self._my_map, 0, 0, 0)
@@ -171,12 +173,12 @@ class Game:
 
 if __name__ == "__main__":
     pygame.init()
-    game = Game((1, 1), 0.4, 200, epsilon=1, width=13, height=13)
-    for _ in range(200):
+    game = Game((1, 1), 0.3, 1000, 0.9, 0.8, 0.8, 8, 8, True)
+    for _ in range(100):
         correct_start = False
         while not correct_start:
-            start_x = np.random.randint(1, 14)
-            start_y = np.random.randint(1, 14)
+            start_x = np.random.randint(1, 9)
+            start_y = np.random.randint(1, 9)
             if game._my_map[start_y, start_x] == -1:
                 correct_start = True
         game.set_start_point((start_x, start_y))

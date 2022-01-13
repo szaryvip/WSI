@@ -44,17 +44,8 @@ class Agent:
             self.make_move(direction)
         else:
             if np.random.rand() < self._epsilon:
-                mov = None
-                direction = -1000000
-                for pos_move in possible_moves:
-                    if direction < self.values[self._position[1],
-                                               self._position[0],
-                                               pos_move]:
-                        direction = (self.values[self._position[1],
-                                                 self._position[0],
-                                                 pos_move])
-                        mov = pos_move
-                direction = mov
+                direction = np.argmax(self.values[self._position[1],
+                                                  self._position[0]])
             else:
                 direction = np.random.choice(possible_moves)
             self.make_move(direction)

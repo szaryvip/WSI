@@ -51,7 +51,7 @@ def clear_position(screen: pygame.display, x: int, y: int,
 
 if __name__ == "__main__":
     pygame.init()
-    mymap = prepare_correct_map((1, 1), 0.9)
+    mymap = prepare_correct_map((1, 1), 0.3)
     size = max(len(mymap), len(mymap[0]))
     screen = pygame.display.set_mode([size*FRAME_SIZE,
                                       size*FRAME_SIZE])
