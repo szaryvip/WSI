@@ -26,7 +26,8 @@ def analyze_dataset(data, arg1: int, arg2: int):
 
 if __name__ == "__main__":
     data = read_data_from_txt("data/seeds_dataset.txt")
-    # data = pd.DataFrame(data)
-    # for x in range(1, 7, 1):
-    #     for y in range(7):
-    #         analyze_dataset(data, x, y)
+    data = pd.DataFrame(data)
+    for x in range(7):
+        for y in range(7):
+            if (x != y):
+                analyze_dataset(data, x, y)
