@@ -12,7 +12,8 @@ def read_data_from_txt(path: str, shuffle: bool = True) -> np.ndarray:
             correct_line = [float(value) for value in line]
             data.append(correct_line)
     data = np.array(data)
-    np.random.shuffle(data)
+    if shuffle:
+        np.random.shuffle(data)
     return data
 
 
@@ -20,6 +21,13 @@ def data_train_test(data: np.ndarray,
                     percent_train: float) -> List[np.ndarray]:
     border = int(len(data) * percent_train)
     return [data[:border], data[border:]]
+
+
+def correct_classes(test: np.ndarray) -> np.ndarray:
+    correct = []
+    for row in test:
+        correct.append(row[-1])
+    return np.array(correct)
 
 
 def mean_of_numbers(numbers: np.ndarray) -> float:
@@ -87,6 +95,7 @@ def bayes(train: np.ndarray, test: np.ndarray) -> List[int]:
 
 
 if __name__ == "__main__":
-    data = read_data_from_txt("data/seeds_dataset.txt")
+    data = read_data_from_txt("data/seeds_dataset.txt", False)
     train, test = data_train_test(data, 0.8)
     print(bayes(train, test))
+    print(correct_classes(test))
