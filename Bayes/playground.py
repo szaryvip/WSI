@@ -24,7 +24,8 @@ def analyze_dataset(data, arg1: int, arg2: int):
               title='Class')
     plt.xlabel(f"Argument {arg1}")
     plt.ylabel(f"Argument {arg2}")
-    plt.savefig(path=f"plots/arg{arg1}_{arg2}.png", fname=f"arg{arg1}_{arg2}.png")
+    plt.savefig(path=f"plots/arg{arg1}_{arg2}.png",
+                fname=f"arg{arg1}_{arg2}.png")
     plt.close()
 
 
